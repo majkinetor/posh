@@ -8,8 +8,7 @@ Proxy
 
 Module to view or update IE, WINHTTP and CLI proxies.
 
-```Powershell
-
+```
     PS> ipmo proxy; gmo proxy
 
     CommandType     Name                                               ModuleName
