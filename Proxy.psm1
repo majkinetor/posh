@@ -14,7 +14,15 @@
     To change a proxy property pass adequate argument to the function.
 
 .EXAMPLE
-    proxy -Server "myproxy.mydomain.com:8080" -Override "override1, override2" -ShowGUI
+    Set proxy server, clear overrides and show IE GUI.
+
+    proxy -Server "myproxy.mydomain.com:8080" -Override "" -ShowGUI
+
+.EXAMPLE
+    Save and reload proxy properties
+
+    proxy | Export-CSV proxy
+    Import-CSV | proxy -Verbose
 
 .NOTES
     The format of the parameters is the same as seen in Internet Options GUI.
@@ -43,12 +51,14 @@ function Update-Proxy() {
     $r = gp $key
     Write-Verbose "Reading proxy data from the registry"
     $proxy=@{
-            Server   = if ($Server)   {$Server}   else { $r.ProxyServer }
-            Override = if ($Override) {$Override} else { $r.ProxyOverride }
-            Enable   = if ($Enable)   {$Enable}   else { $r.ProxyEnable }
+            Server   = if ($PSBoundParameters.Keys -contains 'Server')   {$Server}   else { $r.ProxyServer }
+            Override = if ($PSBoundParameters.Keys -contains 'Override') {$Override} else { $r.ProxyOverride }
+            Enable   = if ($PSBoundParameters.Keys -contains 'Enable')   {$Enable}   else { $r.ProxyEnable }
     }
-    if ($Server -or $Override -or $Enable) {
-        if (!(Test-Admin)) { throw "Setting proxy requires admin privileges" }
+
+    $set  = "Server","Override","Enable" | ? {$PSBoundParameters.Keys -contains $_ }
+    if ($set) {
+        if (!(test-admin)) { throw "Setting proxy requires admin privileges" }
 
         Write-Verbose "Saving proxy data to registry"
 
@@ -86,6 +96,7 @@ function Update-Proxy() {
 #>
 function Update-CLIProxy()
 {
+    [CmdletBinding()]
     param (
         # Register enviornment variables in the system. Without this flag environment variables are local only.
         # Requires administrative rights. Must be used with Clear or FromSystem parameters.
@@ -98,8 +109,10 @@ function Update-CLIProxy()
         [switch] $Clear
     )
 
-    if ($Register -and !(Test-Admin)) { throw "Setting system environment requires admin privileges" }
-    else { Write-Verbose "Remembering changes in the system environment" }
+    if ($Register)  {
+        if (!(test-admin)) { throw "Setting system environment requires admin privileges" }
+        else { Write-Verbose "Remembering changes in the system environment" }
+    }
 
     $proxy_vars = "http_proxy", "https_proxy", "ftp_proxy"
 
@@ -135,7 +148,7 @@ function Update-CLIProxy()
     $env | sort | % { "`${0,-15:0} = '{1}'" -f $_, (gi "$_" -ea SilentlyContinue).Value }
 }
 
-function Test-Admin() {
+function test-admin() {
     $usercontext = [Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()
     $usercontext.IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")
 }
