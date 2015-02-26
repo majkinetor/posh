@@ -16,13 +16,13 @@
 .EXAMPLE
     Set proxy server, clear overrides and show IE GUI.
 
-    proxy -Server "myproxy.mydomain.com:8080" -Override "" -ShowGUI
+    Update-Proxy -Server "myproxy.mydomain.com:8080" -Override "" -ShowGUI
 
 .EXAMPLE
     Save and reload proxy properties
 
-    proxy | Export-CSV proxy
-    Import-CSV | proxy -Verbose
+    Update-Proxy | Export-CSV proxy
+    Import-CSV proxy | Update-Proxy -Verbose
 
 .NOTES
     The format of the parameters is the same as seen in Internet Options GUI.
