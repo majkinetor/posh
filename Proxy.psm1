@@ -1,5 +1,5 @@
 # Author: Miodrag Milic <miodrag.milic@gmail.com>
-# Last Change: 26-Feb-2015.
+# Last Change: 2015-02-26.
 
 #requires -version 1.0
 
@@ -14,15 +14,14 @@
     To change a proxy property pass adequate argument to the function.
 
 .EXAMPLE
-    Set proxy server, clear overrides and show IE GUI.
-
     Update-Proxy -Server "myproxy.mydomain.com:8080" -Override "" -ShowGUI
 
-.EXAMPLE
-    Save and reload proxy properties
+    Set proxy server, clear overrides and show IE GUI.
 
-    Update-Proxy | Export-CSV proxy
-    Import-CSV proxy | Update-Proxy -Verbose
+.EXAMPLE
+    Update-Proxy | Export-CSV proxy;  Import-CSV proxy | Update-Proxy -Verbose
+
+    Save and reload proxy properties
 
 .NOTES
     The format of the parameters is the same as seen in Internet Options GUI.
