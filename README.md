@@ -19,7 +19,7 @@ Module to view or update IE, WINHTTP and CLI proxies.
     Function        Update-Proxy                                       proxy
 
     # Set proxy settings and show IE GUI
-    PS> proxy -Server "myproxy.mydomain.com:8080" -Override "override1, override2" -Enable 1 -ShowGUI
+    PS> proxy -Server "myproxy.mydomain.com:8080" -Override "override1; override2" -Enable 1 -ShowGUI
 
     # Add to override list
     PS> $p = proxy
