@@ -9,12 +9,14 @@ Proxy
 Module to view or update IE, WINHTTP and CLI proxies.
 
 ```
-    PS> ipmo proxy; gmo proxy
+    PS> ipmo proxy; gcm -Module proxy
 
     CommandType     Name                                               ModuleName
     -----------     ----                                               ----------
-    Function        Update-CLIProxy                                    Proxy
-    Function        Update-Proxy                                       Proxy
+    Alias           proxy -> Update-Proxy                              proxy
+    Alias           proxyc -> Update-CLIProxy                          proxy
+    Function        Update-CLIProxy                                    proxy
+    Function        Update-Proxy                                       proxy
 
     # Set proxy settings and show IE GUI
     PS> proxy -Server "myproxy.mydomain.com:8080" -Override "override1, override2" -Enable 1 -ShowGUI
