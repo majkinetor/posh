@@ -1,7 +1,7 @@
 # Author: Miodrag Milic <miodrag.milic@gmail.com>
-# Last Change: 03-Mar-2015.
+# Last Change: 2015-03-05.
 
-#requires -version 1.0
+#requires -version 2
 
 <#
 .SYNOPSIS
@@ -22,89 +22,85 @@
     Runs the alst powershell command with adminsitrative privileges.
 
 .EXAMPLE
-    Start-ElevatedProcess {ps iexplore | kill}
+    Start-ElevatedProcess {ps iexplore | kill} -Wait -WindowStyle Hidden
 
     Opens a new powershell window with administrative privileges stops
-    all internet explorer process.
+    all internet explorer process. Wait for action to return but hide the window.
 
 .EXAMPLE
-    Start-ElevatedProcess -Program notepad -Command {C:\Windows\System32\Drivers\etc\hosts}
+    Start-ElevatedProcess  {C:\Windows\System32\Drivers\etc\hosts} -Program notepad
 
     Opens the host file as admin in notepad.exe.
 
-.INPUTS
-    System.Management.Automation.ScriptBlock,System.String
-
-.OUTPUTS
-    $null
-
 #>
 function Start-ElevatedProcess {
-    [CmdletBinding(DefaultParameterSetName='Manual')]
+    [CmdletBinding(DefaultParameterSetName='Default')]
     param(
-        # Optional script block to execute. Can be argument for legacy cmd.
-        [Parameter(ParameterSetName='Manual',Position=0)]
-        [System.Management.Automation.ScriptBlock]
-        $Command,
+        # Optional script block to execute or a program argument
+        [Parameter(Position=0, ParameterSetName='command')]
+        [scriptblock] $Command,
 
-        # Optional application to elevate. Default value = Powershell.exe
-        [Parameter(ParameterSetName='Manual',Position=1)]
-        [System.String]
-        $Program = (Join-Path -Path $PsHome -ChildPath 'powershell.exe'),
+        # Optional application to elevate, by default 'powershell.exe'.
+        [Parameter(Position=1)]
+        [string] $Program = (Join-Path -Path $PsHome -ChildPath 'powershell.exe'),
 
-        # Option switch. Run previous powershell command as admin.
-        [Parameter(ParameterSetName='History')]
-        [switch]
-        $Last,
-
-        # Option Switch. Leave the eveleated powershell window open.
-        [Parameter(ParameterSetName='History')]
-        [Parameter(ParameterSetName='Manual')]
-        [Parameter(ParameterSetName='Script')]
-        [switch]
-        $NoExit,
-
-        # Optional path to script file.
-        [Parameter(ParameterSetName='Script')]
+        # Path to script file, Program must be 'powershell.exe' or 'cmd.exe'.
+        [Parameter(Position=0, ParameterSetName='script')]
         [ValidateScript({if(Test-Path -Path $_ -PathType Leaf){ $true } else{Throw "$_ is not a valid Path"}})]
-        [system.String]
-        $Script
+        [string] $Script,
+
+        # Run previous powershell command as admin. Commands starting with 'sudo' and 'Start-ElevatedProcess' are ignored.
+        [Parameter(ParameterSetName='last')]
+        [switch] $Last,
+
+        # Leave the eveleated 'powershell.exe' or 'cmd.exe' window open.
+        [Parameter(ParameterSetName='last')]
+        [Parameter(ParameterSetName='command')]
+        [Parameter(ParameterSetName='script')]
+        [switch] $NoExit,
+
+        # Wait for process to exit before returning
+        [switch] $Wait,
+
+        # Window style: Normal, Maximized, Minimized or Hidden
+        [ValidateSet('Normal','Maximized','Minimized','Hidden')]
+        [string] $WindowStyle = 'Normal'
     )
 
-    $startArgs = @{
-        FilePath = $Program
-        Verb = 'RunAs'
-        ErrorAction = 'Stop'
+    $params = @{
+        #WorkingDirectory = $pwd         #doesn't work with RunAs verb so I used 'cd $pwd' with command
+        FilePath         = $Program
+        Verb             = 'RunAs'
+        ErrorAction      = 'Stop'
+        Wait             = $false
+        WindowStyle      = $WindowStyle
     }
 
-    if($last){
-        $LastCommand = Get-History | Select-Object -ExpandProperty CommandLine -Last 1
-        $ArgList = "-command $lastCommand"
+    $argList = @()
+    if ($program -match '[\\]?powershell(.exe)?$') {
+        if ($NoExit)  { $argList += '-NoExit' }
+        if ($Command) { $argList += "-Command ""cd ""$pwd""; {0}""" -f $Command }
+        if ($Last)    {
+            $l = h | sort -Desc | ? { $_.CommandLine -notmatch '^\s*(sudo|Start-ElevatedProcess)\s*' } | select -First 1 -Expand CommandLine
+            $argList += "-Command ""cd ""$pwd""; {0}""" -f $l
+        }
+        if ($Script)  { $argList += "-File ""{0}""" -f (Resolve-Path $script) }
+    }
+    elseif($program -match '[\\]?cmd(.exe)?$'){
+        $a = '/C';
+        if ($NoExit)  { $a = '/K' }
+        if ($Command) { $argList += "$a ""cd ""$pwd"" & $command""" }
+        if ($Script)  { $argList += "$a ""{0}""" -f (Resolve-Path $script) }
+    }
+    else {
+        if ($Command) { $argList += $Command }
     }
 
-    elseif($command -and $program -match 'powershell.exe$'){
-        $ArgList = " -command $command "
-    }
+    if ($Wait) { $params.Wait = $true }
 
-    elseif($script){
-        $script = Resolve-Path -Path $script
-        $ArgList = " -file '$script'"
-    }
-
-    elseif($Command){
-        $ArgList = "$command"
-    }
-
-    if($NoExit -and $program -match 'powershell.exe$'){
-        $ArgList = '-NoExit',$ArgList -join " "
-    }
-
-    if($ArgList){
-        Write-Verbose -Message "Command line: $ArgList"
-        $startArgs.Add('ArgumentList',$ArgList)
-    }
-
-    Start-Process @StartArgs
+    if ($argList -and $argList.Count) { $params.ArgumentList = $argList }
+    Write-Verbose $($params | out-string)
+    Start-Process @params
 }
 
 Set-Alias sudo Start-ElevatedProcess
