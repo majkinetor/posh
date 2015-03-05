@@ -1,5 +1,5 @@
 # Author: Miodrag Milic <miodrag.milic@gmail.com>
-# Last Change: 2015-02-26.
+# Last Change: 05-Mar-2015.
 
 #requires -version 1.0
 
@@ -26,7 +26,7 @@
 .NOTES
     The format of the parameters is the same as seen in Internet Options GUI.
     To bypass proxy for a local network specify keyword ";<local>" at the end
-    of the ProxyOveride values. Setting the proxy requires administrative prvilegies.
+    of the Overide values. Setting the proxy requires administrative prvilegies.
 
 .OUTPUTS
     [HashTable]
@@ -119,7 +119,10 @@ function Update-CLIProxy()
         Write-Verbose "Setting proxy environment variables."
 
         $proxy = Update-Proxy
-        if ($proxy.ProxyEnable -eq 0) { $Clear = $true }
+        if ($proxy.Enable -eq 0) {
+            Write-Verbose "Proxy disabled, setting Clear flag"
+            $Clear = $true
+        }
 
         if (!$Clear) {
             if ($proxy.Server) { $Env:http_proxy = "http://" + $proxy.Server }

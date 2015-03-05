@@ -3,6 +3,7 @@ function ... { cd ..\.. }
 function e { exit }
 function q { exit }
 
+function posh { start powershell }
 
 <# .SYNOPSIS
     Edit multiple files in $Env:EDITOR
