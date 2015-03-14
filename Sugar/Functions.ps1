@@ -6,11 +6,30 @@ function q { exit }
 function posh { start powershell }
 
 <# .SYNOPSIS
+    Test for administration priv.
+#>
+function Test-Admin() {
+    $usercontext = [Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()
+    $usercontext.IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")
+}
+
+<# .SYNOPSIS
     Converts hashtable to PSCustomObject so that cmdlets that require objects can be used.
 #>
 function o {
     param( [Parameter(ValueFromPipeline=$true)] [hashtable] $Hash)
     New-Object PSCustomObject -Property $Hash
+}
+
+<# .SYNOPSIS
+    Expands powershell string.
+   .EXAMPLE
+    gc template.ps1 | expand
+#>
+function expand() {
+    [CmdletBinding()]
+    param ( [parameter(ValueFromPipeline = $true)] [string] $s)
+    $ExecutionContext.InvokeCommand.ExpandString($s)
 }
 
 <# .SYNOPSIS

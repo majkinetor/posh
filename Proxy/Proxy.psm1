@@ -1,5 +1,5 @@
 # Author: Miodrag Milic <miodrag.milic@gmail.com>
-# Last Change: 05-Mar-2015.
+# Last Change: 2015-03-09.
 
 #requires -version 1.0
 
@@ -26,7 +26,8 @@
 .NOTES
     The format of the parameters is the same as seen in Internet Options GUI.
     To bypass proxy for a local network specify keyword ";<local>" at the end
-    of the Overide values. Setting the proxy requires administrative prvilegies.
+    of the Overide values.
+    Setting the winhttp proxy requires administrative prvilegies.
 
 .OUTPUTS
     [HashTable]
@@ -57,7 +58,7 @@ function Update-Proxy() {
 
     $set  = "Server","Override","Enable" | ? {$PSBoundParameters.Keys -contains $_ }
     if ($set) {
-        if (!(test-admin)) { throw "Setting proxy requires admin privileges" }
+        #if (!(test-admin)) { throw "Setting proxy requires admin privileges" }
 
         Write-Verbose "Saving proxy data to registry"
 
@@ -69,7 +70,8 @@ function Update-Proxy() {
         Write-Verbose "Importing winhttp proxy from IE settings"
         $OFS = "`n"
         [string]$res = netsh.exe winhttp import proxy source=ie
-        Write-Verbose $res.Trim()
+        if ($res -match 'Access is denied') {Write-Warning $res}
+        else { Write-Verbose $res.Trim()}
     }
 
     new-object PSCustomObject -Property $proxy
