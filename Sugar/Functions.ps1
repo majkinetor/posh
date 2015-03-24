@@ -6,12 +6,40 @@ function q { exit }
 function posh { start powershell }
 
 <# .SYNOPSIS
-    Edit multiple files in $Env:EDITOR
+    Test for administration priv.
 #>
-function ed () {
-  $filepaths = $input | Get-Item | % { $_.fullname }
-  &$Env:EDITOR $filepaths
+function Test-Admin() {
+    $usercontext = [Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()
+    $usercontext.IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")
 }
+
+<# .SYNOPSIS
+    Converts hashtable to PSCustomObject so that cmdlets that require objects can be used.
+#>
+function o {
+    param( [Parameter(ValueFromPipeline=$true)] [hashtable] $Hash)
+    New-Object PSCustomObject -Property $Hash
+}
+
+<# .SYNOPSIS
+    Expands powershell string.
+   .EXAMPLE
+    gc template.ps1 | expand
+#>
+function expand() {
+    [CmdletBinding()]
+    param ( [parameter(ValueFromPipeline = $true)] [string] $s)
+    $ExecutionContext.InvokeCommand.ExpandString($s)
+}
+
+<# .SYNOPSIS
+    Edit multiple files in $Env:EDITOR
+   .EXAMPLE
+    dir ..\*.txt | ed  .\my_file.txt
+
+    Edit all text files from parent directory along with my_file.txt from current dir.
+#>
+function ed () { $f = $input + $args | gi | % { $_.fullname };  &$Env:EDITOR $f }
 
 <# .SYNOPSIS
     Edit $PROFILE in $Env:EDITOR

@@ -16,7 +16,8 @@ Add to profile:
 Docs
 ----
 
-- [Proxy](_docs/Proxy.md)
-- [AdminTools] (_docs/AdminTools.md)
-- [Desktop] (_docs/Desktop.md)
-- [Sugar] (_docs/Sugar.md)
+- [AdminTools] (AdminTools/AdminTools.md)
+- [Desktop] (Desktop/Desktop.md)
+- [FileSystem] (FileSystem/FileSystem.md)
+- [Proxy](Proxy/Proxy.md)
+- [Sugar] (Sugar/Sugar.md)

@@ -1,6 +1,7 @@
 # Author: Miodrag Milic <miodrag.milic@gmail.com>
-# Last Change: 03-Mar-2015.
-#requires -version 1.0
+# Last Change: 14-Mar-2015.
+
+#requires -version 2.0
 
 <#
 .SYNOPSIS
@@ -15,21 +16,19 @@
 
     Appends value to the PATH variable
 #>
-function Set-EnvironmentVarable()
+function Set-EnvironmentVariable()
 {
     [CmdletBinding(DefaultParameterSetName='Manual')]
     param(
-        # Name of the environment variable, doesn't have to exist
+        # Name of the environment variable, it doesn't have to exist
         [string]$Name,
         # Value of the environment variable
         [string]$Value,
-        # Set to create envirionment variable for the machine
+        # Set to create environment variable for the machine instead for the current user
         [switch]$Machine,
-        # Set to append value to the existing value of environment variable
-        [Parameter(ParameterSetName='Append',Position=1)]
+        # Set to append Value to the existing value of the environment variable
         [switch]$Append,
-        # Set to prepend value to the existing value of environment variable
-        [Parameter(ParameterSetName='Prepend',Position=1)]
+        # Set to prepend a Value to the existing one of the environment variable
         [switch]$Prepend
     )
     $type = "User"
@@ -46,7 +45,7 @@ function Set-EnvironmentVarable()
         Write-Verbose "Previous value: $old"
     }
     else {
-        Write-Verbsoe "$type environment variable created."
+        Write-Verbose "$type environment variable created."
     }
 }
 
