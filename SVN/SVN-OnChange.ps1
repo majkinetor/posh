@@ -39,7 +39,7 @@ function SVN-OnChange {
 
         if ($r -gt $status[$SVNPath]) {
             Write-Verbose "|- '$SVNPath' changed, revision $r"
-            & $Script $r
+            try { & $Script $r } catch { popd; throw }
         }
         else { Write-Verbose "|- '$SVNPath' is up to date at revision $r" }
         $status[$SVNPath] = $r
