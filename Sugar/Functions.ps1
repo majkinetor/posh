@@ -47,3 +47,5 @@ function params( $cmd ) {
         @{Name="Type";        Expression={$_.ParameterType.Name}},
         "Aliases"
 }
+
+function reload( $module) { remove-module $module -ea ignore; import-module $module }
