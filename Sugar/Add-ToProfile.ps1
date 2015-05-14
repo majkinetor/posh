@@ -5,7 +5,7 @@
 
 <#
 .SYNOPSIS
-	Add Powershell code to the Powershell profile
+    Add Powershell code to the Powershell profile
 
 .DESCRIPTION
     This function implements idempotent way to add a Powershell code to the $PROFILE.
