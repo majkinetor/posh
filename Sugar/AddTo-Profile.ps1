@@ -1,5 +1,5 @@
 # Author: Miodrag Milic <miodrag.milic@gmail.com>
-# Last Change: 14-05-2015.
+# Last Change: 15-May-2015.
 
 #requires -version 2.0
 
@@ -15,7 +15,7 @@
     True if code was added to the $PROFILE, False if $code is already in the $PROFILE.
 
 .EXAMPLE
-    AddTo-Profile "Import-Module psreadline`n"
+    AddTo-Profile "Import-Module PSReadLine"
 #>
 function AddTo-Profile() {
 	[CmdletBinding()]
@@ -40,7 +40,4 @@ function AddTo-Profile() {
 	sc $PROFILE $p
 
 	return $true
-
 } 
-
-AddTo-Profile ('$Env:PSModulePath += ";{0}\posh"' -f $pwd)

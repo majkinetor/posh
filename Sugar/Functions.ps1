@@ -6,7 +6,7 @@ function q { exit }
 function posh { start powershell }
 
 <# .SYNOPSIS
-    Test for administration priv.
+    Test for administration privileges
 #>
 function Test-Admin() {
     $usercontext = [Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()
@@ -15,6 +15,9 @@ function Test-Admin() {
 
 <# .SYNOPSIS
     Converts hashtable to PSCustomObject so that cmdlets that require objects can be used.
+
+   .EXAMPLE
+    @{prop1='val1'; prop2='val2'} | o | select -expand prop1
 #>
 function o {
     param( [Parameter(ValueFromPipeline=$true)] [hashtable] $Hash)
@@ -39,12 +42,12 @@ function expand() {
 
     Edit all text files from parent directory along with my_file.txt from current dir.
 #>
-function ed () { $f = $input + $args | gi | % { $_.fullname };  &$Env:EDITOR $f }
+function ed () { $f = $input + $args | gi | % { $_.fullname };  iex "$Env:EDITOR $f" }
 
 <# .SYNOPSIS
-    Edit $PROFILE in $Env:EDITOR
+    Edit $PROFILE using $Env:EDITOR
 #>
-function edp { &$Env:EDITOR $PROFILE }
+function edp { iex "$Env:EDITOR $PROFILE" }
 
 <# .SYNOPSIS
     Get current time in format ISO8601 yyyy-MM-ddTHH-mm-ss
@@ -60,7 +63,7 @@ function in ($dir, $script) {
 }
 
 <# .SYNOPSIS
-    Set current and working dir to the same one.
+    Set current and working directory to the same one.
 #>
 function Set-WorkingDir([string] $Dir=$pwd) { cd $Dir; [IO.Directory]::SetCurrentDirectory($Dir) }
 
@@ -76,4 +79,4 @@ function params( $cmd ) {
         "Aliases"
 }
 
-function reload( $module) { remove-module $module -ea ignore; import-module $module }
+function reload( $module ) { remove-module $module -ea ignore; import-module $module }
