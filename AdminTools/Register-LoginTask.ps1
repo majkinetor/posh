@@ -1,7 +1,9 @@
-<#
-    Last Change: 18-May-2015.
-    Author: M. Milic <miodrag.milic@gmail.com>
+# Last Change: 18-May-2015.
+# Author: M. Milic <miodrag.milic@gmail.com>
 
+#requires -version 4.0
+
+<#
 .SYNOPSIS
     Registers login task for the current user using Task Scheduler.
 
