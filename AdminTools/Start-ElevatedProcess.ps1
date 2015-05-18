@@ -1,5 +1,5 @@
 # Author: Miodrag Milic <miodrag.milic@gmail.com>
-# Last Change: 2015-03-05.
+# Last Change: 2015-05-18.
 
 #requires -version 2
 
@@ -12,20 +12,22 @@
     powershell window. Can run legacy programs as admin cmd.
 
 .EXAMPLE
-    Start-ElevatedProcess
+    sudo
 
-    Opens a new powershell window with administrative privileges.
+    Opens a new powershell window with the administrative privileges and sets
+    the current directory to the one of the calling shell.
 
 .EXAMPLE
-    Start-ElevatedProcess -Last -NoExit
+    sudo -Last -NoExit
 
-    Runs the alst powershell command with adminsitrative privileges.
+    Runs the last powershell command with the adminsitrative privileges and
+    keeps the shell from closing.
 
 .EXAMPLE
     Start-ElevatedProcess {ps iexplore | kill} -Wait -WindowStyle Hidden
 
-    Opens a new powershell window with administrative privileges stops
-    all internet explorer process. Wait for action to return but hide the window.
+    Opens a new powershell window with administrative privileges to stops all
+    internet explorer process. Wait for action to return but hide the window.
 
 .EXAMPLE
     Start-ElevatedProcess  {C:\Windows\System32\Drivers\etc\hosts} -Program notepad
@@ -79,11 +81,15 @@ function Start-ElevatedProcess {
     $argList = @()
     if ($program -match '[\\]?powershell(.exe)?$') {
         if ($NoExit)  { $argList += '-NoExit' }
-        if ($Command) { $argList += "-Command ""cd ""$pwd""; {0}""" -f $Command }
+
+        $cmd = '-Command "' + "cd '$pwd'" + '"'
+        if ($Command) { $cmd += "; {0}" -f $Command } else { $argList += "-NoExit"}
         if ($Last)    {
             $l = h | sort -Desc | ? { $_.CommandLine -notmatch '^\s*(sudo|Start-ElevatedProcess)\s*' } | select -First 1 -Expand CommandLine
-            $argList += "-Command ""cd ""$pwd""; {0}""" -f $l
+            $cmd += "; {0}" -f $l
         }
+        $argList += $cmd
+
         if ($Script)  { $argList += "-File ""{0}""" -f (Resolve-Path $script) }
     }
     elseif($program -match '[\\]?cmd(.exe)?$'){
