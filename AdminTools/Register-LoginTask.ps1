@@ -55,4 +55,3 @@ function Register-LoginTask()
     }
     Register-ScheduledTask @params
 }
-#Register-LoginTask C:\tools\copyq\copyq.exe
