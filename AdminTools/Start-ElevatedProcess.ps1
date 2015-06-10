@@ -1,5 +1,5 @@
 # Author: Miodrag Milic <miodrag.milic@gmail.com>
-# Last Change: 2015-05-18.
+# Last Change: 18-May-2015.
 
 #requires -version 2
 
@@ -80,10 +80,10 @@ function Start-ElevatedProcess {
 
     $argList = @()
     if ($program -match '[\\]?powershell(.exe)?$') {
-        if ($NoExit)  { $argList += '-NoExit' }
+        if ($NoExit -or (!$Command -and !$Script -and !$Last))  { $argList += '-NoExit' }
 
         $cmd = '-Command "' + "cd '$pwd'" + '"'
-        if ($Command) { $cmd += "; {0}" -f $Command } else { $argList += "-NoExit"}
+        if ($Command) { $cmd += "; {0}" -f $Command }
         if ($Last)    {
             $l = h | sort -Desc | ? { $_.CommandLine -notmatch '^\s*(sudo|Start-ElevatedProcess)\s*' } | select -First 1 -Expand CommandLine
             $cmd += "; {0}" -f $l

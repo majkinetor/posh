@@ -14,6 +14,18 @@ Add to profile:
 
 ```
      
+Remove
+------
+
+cpx:
+
+o -> new-hashobject
+sudo -> su  (invoke-elevated)
+edp -> edit-profile
+addto-path -> add-pathvariable
+%EDITOR% - $Pscx:Preferences["TextEditor"] = "gvim.exe"
+New-Symlink -> New-Symlink
+
 Docs
 ----
 
