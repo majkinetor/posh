@@ -78,9 +78,9 @@ function Register-LoginTask()
         $params.TaskName = "PS - $(Split-Path -Leaf $Execute)"
         $scriptPath = Resolve-Path $Execute
         $sa = "-NoProfile -NoLogo -WindowStyle Hidden -NonInteractive -ExecutionPolicy Bypass -Command `"cd `$HOME; . '$scriptPath' $Arguments`""
-        Write-Verbose "Registering powershell logon script. Powershell arguments:`n$sa"
+        Write-Verbose "Registering login script. Powershell arguments:`n$sa"
         $params.Action = New-ScheduledTaskAction -Execute "$PSHome\powershell.exe" -Argument $sa
-    }
+    } else { Write-Verbose "Registering login executable:`n$Execute $Arguments" }
 
     Register-ScheduledTask @params
 }
