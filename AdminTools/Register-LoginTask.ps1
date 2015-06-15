@@ -10,15 +10,19 @@
 .DESCRIPTION
     This function uses Task Scheduler to register login task or Powershell script
     for the current user. This is better then using Startup directory or registry RUN key
-    because it has more options and behaves better with UAC. On the negative side, it
-    requires elevated privileges.
+    because it has more options and behaves better with UAC.
 
     The function creates the task inside the $Env:USERDOMAIN\$Env:USERNAME\Startup path.
 
 .EXAMPLE
     Register-LoginTask "$Env:PROGRAMFILES\Everything\Everything.exe" -Arguments '-startup' -RunElevated -Delay "00:00:30"
 
-    Starts everything.exe minimized in elevated mode with random 30 second delay.
+    Starts everything.exe after login in the background in a elevated mode with random 30 second delay.
+
+.EXAMPLE
+    Get-ScheduledTask -TaskPath *$Env:USERNAME* | ? TaskName -like '*everything*' | Unregister-ScheduledTask
+
+    Unregister previously created login task.
 
 .EXAMPLE
     '"Hello $($args[0])" > out.txt; ' > test.ps1
@@ -27,14 +31,9 @@
     Register login script with arguments. Show Powershell arguments in verbose output.
 
 .EXAMPLE
-    Get-ScheduledTask -TaskPath \$Env:USERDOMAIN\$Env:USERNAME\*
+    Get-ScheduledTask -TaskPath *$Env:USERNAME*
 
     List all registered tasks for the user.
-
-.EXAMPLE
-    Get-ScheduledTask -TaskPath \$Env:USERDOMAIN\$Env:USERNAME\* | select -First 1 | Unregister-ScheduledTask
-
-    Unregister first scheduled task for the user.
 
 #>
 function Register-LoginTask()
