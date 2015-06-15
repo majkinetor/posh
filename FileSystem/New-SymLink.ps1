@@ -17,9 +17,10 @@
     Creates a symbolic link to downloads folder that resides on C:\users\admin\desktop.
 
 .EXAMPLE
-    New-SymLink -Path ..\document.txt -SymName "SomeDocument" -File
+    New-SymLink -Path ..\document.txt -SymName "SomeDocument" -File -Force
 
-    Creates a symbolic link to "document.txt" in the parent folder to a file "SomeDocument" under the current directory.
+    Creates or overwrites a symbolic link to "document.txt" in the parent folder to a file "SomeDocument"
+    under the current directory.
 #>
 function New-SymLink {
     [cmdletbinding(

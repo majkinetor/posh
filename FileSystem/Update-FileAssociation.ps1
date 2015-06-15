@@ -95,3 +95,4 @@ sal assoc Update-FileAssociation
 
 # Relevant docs
 #https://msdn.microsoft.com/en-us/library/windows/desktop/ms724498(v=vs.85).aspx
+#http://stackoverflow.com/questions/3924753/where-does-windows-store-its-open-with-settings
