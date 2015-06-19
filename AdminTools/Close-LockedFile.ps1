@@ -1,5 +1,5 @@
 <#
-    Last Change: 10-Jun-2015.
+    Last Change: 19-Jun-2015.
     Modified: M. Milic <miodrag.milic@gmail.com>
 
 .SYNOPSIS
@@ -20,7 +20,7 @@ Param(
         }
     }
     Process {
-        $HandleOut = Invoke-Expression ( $HandleApp +'/accepteula ' + $Filename )
+        $HandleOut = Invoke-Expression ( $HandleApp +' /accepteula ' + $Filename )
         $Locks = $HandleOut | ? {$_ -match "(.+?)\s+pid: (\d+?)\s+type: File\s+(\w+?): (.+)\s*$"} | % {
             [PSCustomObject]@{
                 AppName    = $Matches[1]
