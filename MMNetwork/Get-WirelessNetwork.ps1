@@ -12,14 +12,14 @@
 .NOTES
     This is a wrapper for english locale of netsh wlan.
 #>
-function Get-WirelessNetwork {
+function Get-WirelessNetwork() {
     [CmdletBinding()]
     param(
         # List of Regex criteria for SSID. Ommit to get everything.
         [string[]]$SSID,
 
         #Controls if results are passed to format-table cmdlet or not.
-        [switch]$List)
+        [switch]$List
     )
 
     if ((gwmi win32_operatingsystem).Version.Split(".")[0] -lt 6) { throw "Requires Windows Vista or higher." }
@@ -33,7 +33,13 @@ function Get-WirelessNetwork {
     $results = @()
     $ifaces | % {
         $iface = $_
-        netsh wlan show network mode=bssid interface="$iface" | select -Skip 4 | % {
+        while(1) {
+            $netsh = netsh wlan show network mode=bssid interface="$iface" #repeat command until we get all the data
+            if ($netsh -match 'Signal') { break }
+            sleep -Milliseconds 200
+        }
+
+        $netsh | select -Skip 4 | % {
             if (!$_) { $n.Interface = $iface; $results += $n; $n = $nt.PSObject.Copy(); return }
             $a =  $_ -split ' : '
             $p = $a[0].Trim() -replace '[ \d]*'; $v = $a[1].Trim()
