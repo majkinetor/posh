@@ -9,8 +9,10 @@
 
 .DESCRIPTION
     Uses netsh wlan to get wireless network information in Powershell friendly way.
+.PARAMETER $List
+    Ccontrols if results are passed to format-table cmdlet or not.
 #>
-function Get-WirelessNetworks([string]$Interface='Wi-Fi') {
+function Get-WirelessNetworks([switch]$List) {
 
     if ((gwmi win32_operatingsystem).Version.Split(".")[0] -lt 6) { throw "Requires Windows Vista or higher." }
     if ((gsv "wlansvc").Status -ne "Running" ) { throw "Wlan service is not running." }
@@ -30,5 +32,6 @@ function Get-WirelessNetworks([string]$Interface='Wi-Fi') {
             if ($props -contains $p) { $n.$p = $v }
         }
     }
-    $results
+    $r = $results | sort {[int]($_.Signal -replace "%")} -Descending
+    if ($List) { $r } else { $r | ft }
 }
