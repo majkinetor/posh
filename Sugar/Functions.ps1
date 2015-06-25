@@ -29,12 +29,18 @@ function o {
    .EXAMPLE
     gc template.ps1 | expand
 #>
+#function expand() {
+    #[CmdletBinding()]
+    #param ( [parameter(ValueFromPipeline = $true)] [string] $s)
+    #$ExecutionContext.InvokeCommand.ExpandString($s)
+#}
+
 function expand() {
     [CmdletBinding()]
-    param ( [parameter(ValueFromPipeline = $true)] [string] $s)
-    $ExecutionContext.InvokeCommand.ExpandString($s)
-}
+    param ( [parameter(ValueFromPipeline = $true)] [string] $str)
 
+    "@`"`n$str`n`"@" | iex
+}
 <# .SYNOPSIS
     Edit multiple files in $Env:EDITOR
    .EXAMPLE
