@@ -24,11 +24,9 @@ function Get-WirelessNetwork() {
     [CmdletBinding()]
     param(
         # List of Regex criteria for SSID. Ommit to get everything.
-        [string[]]$SSID,
-
-        #Controls if results are passed to format-table cmdlet or not.
-        [switch]$List
+        [string[]]$SSID
     )
+Write-Verbose $PSCmdlet.MyInvocation.PipelinePosition
 
     if ((gwmi win32_operatingsystem).Version.Split(".")[0] -lt 6) { throw "Requires Windows Vista or higher." }
     if ((gsv "wlansvc").Status -ne "Running" ) { throw "Wlan service is not running." }
@@ -58,7 +56,7 @@ function Get-WirelessNetwork() {
                 $status = $ifaces | sls "^\s*SSID\s*:\s*$($n.SSID)\s*" -Context 1,0
                 $status = $status -split "\n|:" | select -Index 1 | % Trim
                 if ($status -eq 'connected') { $n.Status = "Connected" }
-                if ($iface_profiles -match $n.SSID) { $n.Status = "Disconnected" }
+                elseif ($iface_profiles -match $n.SSID) { $n.Status = "Disconnected" }
 
                 $results += $n; $n = $nt.PSObject.Copy()
                 return
@@ -74,6 +72,5 @@ function Get-WirelessNetwork() {
         $r = $results | ? SSID -match $re
     }
     $r = $r | sort {[int]($_.Signal -replace "%")} -Descending
-    if ($List) { $r } else { $r | ft }
+    $r
 }
-
