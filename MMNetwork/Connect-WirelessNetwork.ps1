@@ -10,6 +10,15 @@
 
 .DESCRIPTION
     Connect to choosen wireless network. Create profile if it doesn't exist already.
+
+.EXAMPLE
+    Get-WirlessNetwork android | Connect-WirelessNetwork
+
+    Connect to wireless network with preexisting profile
+.EXAMPLE
+    Get-WirlessNetwork android | Connect-WirelessNetwork -Key 1234567890 -Force
+
+    Connect to wireless network and force creation of new profile with specified key
 #>
 function Connect-WirelessNetwork() {
     [CmdletBinding()]
@@ -24,7 +33,7 @@ function Connect-WirelessNetwork() {
 
         # Specifies the authentication method that must be used to connect to the wireless LAN
         [Parameter(ValueFromPipelineByPropertyName=$true)]
-        [ValidateSet('open', 'shared', 'WPA-Personal, WPA2-Personal')] #WPA-Enterprise, WPA2-Enterprise
+        [ValidateSet('open', 'shared', 'WPA-Personal', 'WPA2-Personal')] #WPA-Enterprise, WPA2-Enterprise
         [string]$Authentication='WPA2-Personal',
 
         # Sets the data encryption to use to connect to the wireless LAN
@@ -45,14 +54,17 @@ function Connect-WirelessNetwork() {
         # Force profile creation
         [switch]$Force
     )
+    if (!$SSID) { throw "SSID must be specified" }
+
     netsh wlan show profile $SSID | out-null
     if ($LastExitCode -or $Force) {
-        $Authentication = $Authentication -replace '-Personal', 'PSK'
-        $Encryption     = $Encryption -replace 'CCMP', 'AES'
-        if ($ConnectionType='IBSS') {$ConnectionMode = 'manual'}
+        Write-Verbose "Creating profile $SSID"
+        $auth = $Authentication -replace '-Personal', 'PSK'
+        $enc  = $Encryption -replace 'CCMP', 'AES'
+        if ($ConnectionType -eq 'IBSS') {$ConnectionMode = 'manual'}
 
         $keyType = 'passPhrase'
-        if ($Encryption = 'WEP') { $keyType = 'networkKey' }
+        if ($Encryption -eq 'WEP') { $keyType = 'networkKey' }
 
 $profile_xml=@"
 <?xml version="1.0"?>
@@ -68,8 +80,8 @@ $profile_xml=@"
     <MSM>
         <security>
             <authEncryption>
-                <authentication>$Authentication</authentication>
-                <encryption>$Encryption</encryption>
+                <authentication>$auth</authentication>
+                <encryption>$enc</encryption>
             </authEncryption>
             <sharedKey>
                 <keyType>$keyType</keyType>
@@ -86,11 +98,12 @@ $profile_xml=@"
         $profile_fn = "tmp_profile.xml"
         $profile_xml | out-file $profile_fn
         netsh wlan add profile filename=$profile_fn
-        rm $profile_fn
-    }
+        if ($LastExitCode) {return}
+        rm $profile_fn  #possibly overwrite this file to shred the password content
+    } else { Write-Verbose "Using existing profile for $SSID" }
 
     netsh wlan connect name=$SSID #interface is mandatory if there are multiple
 }
 
-#Store: ProgramData\Microsoft\WlanSvc\Profiles\Interfaces
+#Store: "$Env:ProgramData\Microsoft\WlanSvc\Profiles\Interfaces"
 #If unencrypted key material is passed to WlanSetProfile, the key material is automatically encrypted before it is stored in the profile store.
