@@ -19,6 +19,16 @@
     Get-WirelessNetwork android
 
     Get only wireless networks that have android in its name.
+
+.EXAMPLE
+    Get-WirelessNetwork | ? Authentication -eq 'open'
+
+    Get only wireless networks with open authentication.
+
+.EXAMPLE
+    Get-WirelessNetwork | ? { [int]$_.Signal -gt 70 }
+
+    Get only wireless networks with signal stronger then 70%
 #>
 function Get-WirelessNetwork() {
     [CmdletBinding()]
@@ -52,6 +62,7 @@ Write-Verbose $PSCmdlet.MyInvocation.PipelinePosition
         $netsh | select -Skip 4 | % {
             if (!$_) {
                 $n.Interface = $iface
+                $n.Signal = $n.Signal -replace '.$'
 
                 $status = $ifaces | sls "^\s*SSID\s*:\s*$($n.SSID)\s*" -Context 1,0
                 $status = $status -split "\n|:" | select -Index 1 | % Trim
