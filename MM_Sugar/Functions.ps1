@@ -3,7 +3,8 @@ function ... { cd ..\.. }
 function e { exit }
 function q { exit }
 
-function posh { start powershell }
+function Start-Powershell { start powershell }
+Set-Alias posh Start-Powershell
 
 <# .SYNOPSIS
     Test for administration privileges
@@ -11,17 +12,6 @@ function posh { start powershell }
 function Test-Admin() {
     $usercontext = [Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()
     $usercontext.IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")
-}
-
-<# .SYNOPSIS
-    Converts hashtable to PSCustomObject so that cmdlets that require objects can be used.
-
-   .EXAMPLE
-    @{prop1='val1'; prop2='val2'} | o | select -expand prop1
-#>
-function o {
-    param( [Parameter(ValueFromPipeline=$true)] [hashtable] $Hash)
-    New-Object PSCustomObject -Property $Hash
 }
 
 <# .SYNOPSIS
