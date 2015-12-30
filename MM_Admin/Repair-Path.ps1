@@ -2,6 +2,8 @@
 
 # some duplicate paths end with /
 # whatif
+# admin on UAC 
+# %...% in path
 function Repair-Path() {
     [CmdletBinding()]
     param(
