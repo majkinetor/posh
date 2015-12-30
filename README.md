@@ -14,8 +14,8 @@ Add to profile:
 
 ```
      
-Remove
-------
+Notes
+-----
 
 cpx:
 
@@ -25,12 +25,3 @@ edp -> edit-profile
 addto-path -> add-pathvariable
 %EDITOR% - $Pscx:Preferences["TextEditor"] = "gvim.exe"
 New-Symlink -> New-Symlink
-
-Docs
-----
-
-- [AdminTools] (AdminTools/AdminTools.md)
-- [Desktop] (Desktop/Desktop.md)
-- [FileSystem] (FileSystem/FileSystem.md)
-- [Proxy](Proxy/Proxy.md)
-- [Sugar] (Sugar/Sugar.md)
