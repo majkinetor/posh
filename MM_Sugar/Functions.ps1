@@ -14,6 +14,10 @@ function Test-Admin() {
     $usercontext.IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")
 }
 
+function halt { shutdown -t 0 }
+function hiber { shutdown -t 0 -h }
+function reboot { shutdown -t 0 -r }
+
 <# .SYNOPSIS
     Expands powershell string.
    .EXAMPLE
@@ -73,6 +77,13 @@ function params( $cmd ) {
         @{Name="Mandatory";   Expression={if ($_.IsMandatory) { "Yes" } else {""}}},
         @{Name="Type";        Expression={$_.ParameterType.Name}},
         "Aliases"
+}
+
+<# .SYNOPSIS
+    Returns all scheduled tasks under the username Path
+#>
+function tasks() {
+    Get-ScheduledTask -TaskPath *$Env:USERNAME*
 }
 
 function reload( $module ) { remove-module $module -ea ignore; import-module $module }
