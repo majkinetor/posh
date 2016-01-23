@@ -18,17 +18,17 @@ function halt { shutdown -t 0 }
 function hiber { shutdown -t 0 -h }
 function reboot { shutdown -t 0 -r }
 
-<# .SYNOPSIS
-    Expands powershell string.
-   .EXAMPLE
-    gc template.ps1 | expand
-#>
 #function expand() {
     #[CmdletBinding()]
     #param ( [parameter(ValueFromPipeline = $true)] [string] $s)
     #$ExecutionContext.InvokeCommand.ExpandString($s)
 #}
 
+<# .SYNOPSIS
+    Expands powershell string.
+   .EXAMPLE
+    gc template.ps1 | expand
+#>
 function expand() {
     [CmdletBinding()]
     param ( [parameter(ValueFromPipeline = $true)] [string] $str)
@@ -47,7 +47,7 @@ function ed () { $f = $input + $args | gi | % { $_.fullname };  iex "$Env:EDITOR
 <# .SYNOPSIS
     Edit $PROFILE using $Env:EDITOR
 #>
-function edp { iex "$Env:EDITOR $PROFILE" }
+function edp { ed $PROFILE }
 
 <# .SYNOPSIS
     Get current time in format ISO8601 yyyy-MM-ddTHH-mm-ss
@@ -80,10 +80,8 @@ function params( $cmd ) {
 }
 
 <# .SYNOPSIS
-    Returns all scheduled tasks under the username Path
+    Returns all scheduled tasks under the username Path in Task Scheduler
 #>
-function tasks() {
-    Get-ScheduledTask -TaskPath *$Env:USERNAME*
-}
-
+function tasks() { Get-ScheduledTask -TaskPath *$Env:USERNAME* }
 function reload( $module ) { remove-module $module -ea ignore; import-module $module }
+function groups { [System.Security.Principal.WindowsIdentity]::GetCurrent().Groups | % {$_.Translate([Security.Principal.NTAccount])} | sort }
