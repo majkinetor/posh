@@ -1,23 +1,26 @@
 <#
-    Last Change: 13-Aug-2015.
+    Last Change: 24-Jan-2016.
     Author: M. Milic <miodrag.milic@gmail.com>
 
 .SYNOPSIS
-    Add given directory to the machine PATH environment variable in an
-    idempotent way.
+    Add given directory to the machine PATH environment variable in an idempotent way.
 
 .PARAMETER path
     Absolute or relative directory path. If ommited, defaults to $pwd.
+
 #>
-function Add-Path($path=$pwd)
+function Add-Path($path=$pwd, [switch]$Prepend)
 {
     $path=(gi $path).FullName
     if (!(Test-Path $path)) { Write-Error "Path doesn't exist: $path"; return; }
     $Env:Path = [System.Environment]::GetEnvironmentVariable("PATH", "Machine")
 
     if (!$Env:path.EndsWith(";")) {$Env:Path += ";"}
-    if ($Env:Path -like "*;$path;*") {return}
-    $Env:Path += $path
+    if ($Env:Path -like "*$path*") {return}
+
+    if ($Prepend) { $Env:Path = $path + $Env:Path }
+    else { $Env:Path += $path }
+
     [System.Environment]::SetEnvironmentVariable("PATH", $Env:Path, "Machine")
 
     # Notify system of change via WM_SETTINGCHANGE
@@ -30,5 +33,5 @@ function Add-Path($path=$pwd)
     }
 
     $HWND_BROADCAST = [IntPtr] 0xffff; $WM_SETTINGCHANGE = 0x1a; $result = [UIntPtr]::Zero
-    [Win32.Nativemethods]::SendMessageTimeout($HWND_BROADCAST, $WM_SETTINGCHANGE, [UIntPtr]::Zero, "Environment", 2, 5000, [ref] $result);
+    [Win32.Nativemethods]::SendMessageTimeout($HWND_BROADCAST, $WM_SETTINGCHANGE, [UIntPtr]::Zero, "Environment", 2, 5000, [ref] $result) | out-null
 }
