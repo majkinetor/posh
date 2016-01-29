@@ -1,8 +1,6 @@
 # Author: Miodrag Milic <miodrag.milic@gmail.com>
-# Last Change: 03-Mar-2015.
+# Last Change: 29-Jan-2016.
 # Adapted from:  http://goo.gl/xvHcSE
-
-#requires -version 1.0
 
 <#
 .SYNOPSIS
@@ -33,7 +31,7 @@ function Set-PinnedApplication
 
     begin
     {
-        function InvokeVerb ([string]$FilePath, $verb)
+        function Invoke-Verb ([string]$FilePath, $verb)
         {
             $verb     = $verb.Replace("&","")
             $path     = split-path $FilePath
@@ -44,7 +42,7 @@ function Set-PinnedApplication
             if($itemVerb -eq $null){ throw "Verb $verb not found." } else { $itemVerb.DoIt() }
         }
 
-        function GetVerb ($verbId)
+        function Get-Verb ($verbId)
         {
             try {
                 $t = [type]"CosmosKey.Util.MuiHelper"
