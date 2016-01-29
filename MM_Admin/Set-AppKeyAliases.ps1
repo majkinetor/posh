@@ -1,5 +1,5 @@
 <#
-    Last Change: 21-Jan-2016.
+    Last Change: 2016-01-21.
     Author: M. Milic <miodrag.milic@gmail.com>
 
 .SYNOPSIS
@@ -17,17 +17,18 @@ function Set-AppKeyAliases(){
     [CmdletBinding()]
     param()
 
-    $AppPathKey = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths"
-    If (!(Test-Path $AppPathKey)) { throw "$appPathKey doesn't exist" }
+    $AppPathKey = "SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths"
 
-    ls $AppPathKey | % {
+    ls "HKLM:\$AppPathKey", "HKCU:\$AppPathKey" -ea 0 | % {
         $name = $_.Name -split '\\' | select -Last 1
         $name = $name -replace '.exe$'
 
         $path = gp $_.PSPath | select -expand '(default)' -ea 0
+        if ($path -ne $null -and $path.StartsWith('"')) { $path = $path.Substring(1, $path.Length-2) }
         if ($path -eq $null -or !(Test-Path $path)) {Write-Warning "Ignoring invalid path for '$name' : '$path'"; return }
 
         Write-Verbose ("{0} = {1}" -f $name, $path)
-        Set-Alias $name $path -Scope global
+        Set-Alias $name $path -Scope global -ea 0 -ErrorVariable err
+        if ($err[0].FullyQualifiedErrorId -eq 'AliasNotWritable,Microsoft.PowerShell.Commands.SetAliasCommand') { Write-Warning "Alias not writable: $name" }
     }
 }
