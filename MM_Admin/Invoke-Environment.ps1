@@ -20,18 +20,20 @@
     # This command fails if vsvars32.bat exit code is not 0
     Invoke-Environment '"%VS100COMNTOOLS%\vsvars32.bat"'
 #>
+function Invoke-Environment {
+    param
+    (
+        [Parameter(Mandatory=$true)] [string]
+        # Any cmd shell command, normally a configuration batch file.
+        $Command
+    )
 
-param
-(
-    [Parameter(Mandatory=$true)] [string]
-    # Any cmd shell command, normally a configuration batch file.
-    $Command
-)
+    $Command = "`"" + $Command + "`""
+    cmd /c "$Command > nul 2>&1 && set" | . { process {
+        if ($_ -match '^([^=]+)=(.*)') {
+            [System.Environment]::SetEnvironmentVariable($matches[1], $matches[2])
+        }
+    }}
 
-$Command = "`"" + $Command + "`""
-cmd /c "$Command > nul 2>&1 && set" | .{process{
-    if ($_ -match '^([^=]+)=(.*)') {
-        [System.Environment]::SetEnvironmentVariable($matches[1], $matches[2])
-    }
-}}
+}
 
