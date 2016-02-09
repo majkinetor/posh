@@ -1,5 +1,5 @@
 # Author: Miodrag Milic <miodrag.milic@gmail.com>
-# Last Change: 14-Mar-2015.
+# Last Change: 09-Feb-2016.
 
 #requires -version 2.0
 
@@ -37,8 +37,10 @@ function Open-Regedit {
                     'HKCC'='HKEY_CURRENT_CONFIG'
                     'HKCR'='HKEY_CLASSES_ROOT'}
     $Replacements.Keys | % { $key = $key.ToUpper().Replace($_, $Replacements[$_]) }
+
+    $Key =  $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($Key)
     Write-Verbose "Open $Key"
-    sp HKCU:\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit\ -Name LastKey -Value $Key -Force
+    sp HKCU:\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit -Name LastKey -Value $Key -Force
     regedit -m # Open new instance
 }
 
