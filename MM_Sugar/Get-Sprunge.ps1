@@ -17,7 +17,7 @@
 #>
 function get-sprunge([string]$FileType=".", [switch]$Open) {
     if (!(gcm curl.exe -ea 0)) { throw 'Sprunge requires curl. Use cinst curl.exe' }
-    $url = $input | curl.exe -F 'sprunge=<-' -H  "Expect: " http://sprunge.us
+    $url = $input | curl.exe -s -F 'sprunge=<-' -H  "Expect: " http://sprunge.us
     $url += "?$FileType"
     $url | clip
     if ($Open) { start $url }

@@ -3,7 +3,7 @@
     Edit $PROFILE using $Env:EDITOR
 #>
 function Edit-Profile {
-    mkdir (Split-Path $PROFILE) -force -ea 0
+    mkdir (Split-Path $PROFILE) -force -ea 0 | out-null
     ed $PROFILE
 }
 
