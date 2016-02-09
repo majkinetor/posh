@@ -1,4 +1,4 @@
-# Last Change: 15-Jun-2015.
+# Last Change: 09-Feb-2016.
 # Author: M. Milic <miodrag.milic@gmail.com>
 
 #requires -version 4.0
@@ -35,6 +35,8 @@
 
     List all registered tasks for the user.
 
+.NOTE
+    Requires Windows 8+
 #>
 function Register-LoginTask()
 {
