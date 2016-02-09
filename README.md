@@ -12,3 +12,11 @@ Add to profile:
     mkdir -force (Split-Path -Parent $PROFILE) | out-null
     "`$Env:PSModulePath += `";$pwd\posh`"" | Out-File -Encoding ascii -Append $PROFILE
 ```
+
+To import-module from SMB share without security warning:
+
+```Powershell
+    $r = "HKCU:\Software\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\ZoneMap"
+    mkdir -force $r
+    sp $r UNCAsIntranet 1
+```
