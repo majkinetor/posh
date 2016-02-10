@@ -2,11 +2,14 @@
 #http://stackoverflow.com/questions/4405091/how-do-you-avoid-over-populating-the-path-environment-variable-in-windows
 
 <#
-    Last Change: 30-Dec-2015.
+    Last Change: 10-Feb-2016.
     Author: M. Milic <miodrag.milic@gmail.com>
 
 .SYNOPSIS
     Cleanup and minimize the machine PATH variable.
+
+.EXAMPLE
+    PS> Repair-Path -Whatif
 #>
 function Repair-Path() {
     [CmdletBinding(SupportsShouldProcess=$True)]
@@ -102,8 +105,6 @@ StringBuilder shortPath,uint bufferSize);
 
     # ===============================================
 
-    if (!(Test-Admin)) { Write-Error "Setting the PATH requires administrative rights"; return }
-
     $s=@{Removed = @(); User = @(); Duplicates = 0; Empty = 0; Trails = 0 }     #stats
     $v=@{path=''; npath=''; sep=';'; dir=''; edir=''}          #vars to share with nested funcs
 
@@ -141,6 +142,8 @@ StringBuilder shortPath,uint bufferSize);
 
     if( $pscmdlet.ShouldProcess("PATH environment variable", "Update") )
     {
+        if (!(Test-Admin)) { throw "Setting the PATH requires administrative rights" }
+
         [Environment]::SetEnvironmentVariable("PATH", $v.npath, "Machine")
         $backupPath = "PATH_" + (get-date).ToString("yyyy-MM-dd_HHmmss")
         [Environment]::SetEnvironmentVariable($backupPath, $v.path, "Machine")
