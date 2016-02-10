@@ -12,7 +12,7 @@
     Registry key or null
 
 #>
-function Get-AppliationUninstallKey([string]$AppName)
+function Get-ApplicationUninstallKey([string]$AppName)
 {
     $local_key       = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall\*'
     $machine_key     = 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\*'
