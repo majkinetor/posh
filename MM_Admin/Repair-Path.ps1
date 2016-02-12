@@ -45,7 +45,7 @@ function Repair-Path() {
     }
 
     function double() {
-        $d = $v.npath.ToLower() -match "$([Regex]::Escape($v.dir))$($v.sep)?" -or $v.npath.ToLower() -match "$([Regex]::Escape($v.edir))$($v.sep)?"
+        $d = $v.npath.ToLower() -match "$([Regex]::Escape($v.dir.ToLower()))$($v.sep)?" -or $v.npath.ToLower() -match "$([Regex]::Escape($v.edir.ToLower()))$($v.sep)?"
         if (!$d) { return $false }
 
         $s.Duplicates += 1
@@ -115,21 +115,19 @@ StringBuilder shortPath,uint bufferSize);
     $answer = 'keep'
     $v.path -split $v.sep | % {
         $v.dir = $_.Trim()
-                
+
         if ($v.dir -eq '') {  $s.Empty += 1; return }
-   
+
         if ($v.dir.EndsWith("\")) { $v.dir = $v.dir -replace '.$'; $s.Trails += 1 }
 
         $v.edir = [System.Environment]::ExpandEnvironmentVariables($v.dir)
 
-        if ( double ){ return }
+        if ( double ) { return }
         if ( invalid) { return }
 
         if ($Interactive) { $answer = choice }
         if (('keep','stop') -contains $answer) {
             if ($answer -eq 'stop') { Write-Verbose "User stopped interaction"; $answer = 'keep'; $Interactive = $false }
-
-
 
             if ($Shrink) { $v.dir = shrink $v.dir }
             if ($Expand) { $v.dir = expand $v.dir }
