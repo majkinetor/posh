@@ -2,7 +2,7 @@
 #http://stackoverflow.com/questions/4405091/how-do-you-avoid-over-populating-the-path-environment-variable-in-windows
 
 <#
-    Last Change: 10-Feb-2016.
+    Last Change: 12-Feb-2016.
     Author: M. Milic <miodrag.milic@gmail.com>
 
 .SYNOPSIS
@@ -137,7 +137,7 @@ StringBuilder shortPath,uint bufferSize);
         }
 
         if ($answer -eq 'remove' ) {
-            Write-Verbose "User removed path: $v.dir"
+            Write-Verbose "User removed path: $($v.dir)"
             $s.user += $v.dir
         }
     }
