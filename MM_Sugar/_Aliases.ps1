@@ -1,7 +1,10 @@
-sal e exit
-sal q exit
-sal import Import-Module
-sal remove Remove-Module
+sal e       exit
+sal q       exit
+sal import  Import-Module
+sal remove  Remove-Module
+sal new     New-Object
 
 #Remove problematic default aliases
-rm alias:curl, alias:wget -ea 0
+rm -ea 0 `
+    alias:curl,
+    alias:wget
