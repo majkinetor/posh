@@ -73,7 +73,7 @@ This is the output when connecting to the VPN network "acme" with 60 seconds tim
 
     PS> vpnc $pwd\myvpn\acme 60
     --------------------------------------------------
-    Connet-VPN started at 2016-02-11T13-18-45
+    Connect-VPN started at 2016-02-11T13-18-45
     Started background vpn connection: acme
 
     Cisco AnyConnect Secure Mobility Client (version 3.1.12020) .
