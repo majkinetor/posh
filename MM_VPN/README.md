@@ -1,5 +1,5 @@
-Power-VPN
-=========
+MM_VPN
+======
 
 This module implements functions to connect to the VPN network using Powershell and Cisco Anyconnect.
 
@@ -10,8 +10,11 @@ Prerequisites
 - Powershell 3+ (Windows 7 only)( `cinst powershell` )
 - Enable script execution via `Set-ExecutionPolicy`
 
+Installation
+------------
+
 Usage
---------
+-----
 
 Create `myvpn.ps1` script file which will will hold the VPN connections. Source this script in your $PROFILE:
 
@@ -23,10 +26,10 @@ To define connections within `myvpn.ps` import `mm_vpn` module and define functi
 
     import-module mm_vpn
 
-    function acme() { connect-vpn $PSScriptRoot/myvpn/acme  }
-    function ibm()  { connect-vpn $PSScriptRoot/myvpn/ibm }
+    function acme() { connect-vpn $PSScriptRoot/acme  }
+    function ibm()  { connect-vpn $PSScriptRoot/ibm }
 
-In above case two connections are defined, `acme` and `ibm` which use configuration files defined in `myvpn` directory. 
+In above case two connections are defined, `acme` and `ibm` which use configuration files defined in the same directory as `myvpn.ps1` script. 
 After this, to connect to the network simply call the function from within console:
 
     PS> acme
@@ -34,7 +37,7 @@ After this, to connect to the network simply call the function from within conso
     Cisco AnyConnect Secure Mobility Client (version 4.2.00096)
     ...
 
-Complete cumulative log file is saved in the `vpn.log` folder of the module.
+Complete cumulative log file is saved in the file `vpn.log` in the module directory.
 
 Functions
 ---------
