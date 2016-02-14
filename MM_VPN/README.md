@@ -22,7 +22,7 @@ Create `myvpn.ps1` script file which will will hold the VPN connections. Source 
 
     . <path_to_power_vpn>\myvpn.ps1
 
-To define connections within `myvpn.ps` import `mm_vpn` module and define function for each VPN network:
+To define connections within `myvpn.ps1` import `mm_vpn` module and define function for each VPN network:
 
 **Example of myvpn.ps1 script**:
 
