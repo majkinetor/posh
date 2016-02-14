@@ -13,6 +13,8 @@ Prerequisites
 Installation
 ------------
 
+[Install module](https://msdn.microsoft.com/en-us/library/dd878350(v=vs.85).aspx) in some of the designated folders.
+
 Usage
 -----
 
