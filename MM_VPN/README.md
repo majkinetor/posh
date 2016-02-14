@@ -61,12 +61,6 @@ This is the simple text file where each line is the command or response that VPN
 
 In any case, you should edit the configuration with your username and password.
 
-Notes
------
-
-* Tačan niz koraka u konfiguracionom fajlu zavisi od mrežnih parametara, naročito DNS opcije. DNS se iz skripte može podesiti funkcijom `set-dns`.
-
-
 Complete output example
 -----------------------
 
