@@ -21,7 +21,7 @@ function connect-vpn( [string] $ConfigPath, [int] $Timeout = -1 ) {
     $log = "$PSScriptRoot\vpn.log"
 
     "-"*50 | tee $log -Append
-    "Connet-VPN started at " + [DateTime]::UtcNow.ToString("s").Replace(':','-') | tee $log -Append
+    "Connect-VPN started at " + [DateTime]::UtcNow.ToString("s").Replace(':','-') | tee $log -Append
 
     if ($Timeout -eq -1) { connect-vpnfg $ConfigPath | tee $log -Append }
     else { connect-vpnbg $ConfigPath $Timeout | tee $log -Append }
