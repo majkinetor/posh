@@ -7,7 +7,7 @@
 
     Set the primary and secundary DNS for the interface with IP address 10.32.34.192
 #>
-function set-dns( [string]$ip, [string[]] $dnsList) {
+function Set-Dns( [string]$ip, [string[]] $dnsList) {
     $Interface = Get-WmiObject Win32_NetworkAdapterConfiguration | ? { $_.IpAddress -eq $ip }
     $Interface.SetDNSServerSearchOrder($dnsList)
 }
