@@ -1,5 +1,5 @@
 # Author: Miodrag Milic <miodrag.milic@gmail.com>
-# Last Change: 14-Feb-2016.
+# Last Change: 23-Feb-2016.
 
 #requires -version 3.0
 
@@ -56,22 +56,22 @@ function connect-vpnbg( [string] $ConfigPath, [int] $Timeout ) {
     $out
 }
 
+function compact-log {
+    process {
+        $res = $_.Trim()
+        if ( ($res -eq '') -or ($res -eq 'VPN>') -or ($res -eq $prev) ) { return }
+        else { $prev = $res; $res}
+    }
+}
 <#
 .SYNOPSIS
     Disconnect from the VPN network
 #>
 function disconnect-vpn() {
     "Disconnecting from VPN network"
-    vpncli disconnect
+    vpncli disconnect | compact-log
 }
 
-function compact-log() {
-    process {
-        $res = $_ -split '\n' | ? { $_.Trim(); ($_ -ne '') -or ($_ -eq 'VPN>') }
-        $res = $res | ? { $_ = $_.Trim(); $_ -ne '' -and $_ -ne 'VPN>'}
-        $res
-    }
-}
 
 function find-anyconnect() {
     if ((gcm vpncli,vpnui -ea 0).count -eq 2) { return }
