@@ -23,9 +23,9 @@
 function Invoke-Environment {
     param
     (
-        [Parameter(Mandatory=$true)] [string]
         # Any cmd shell command, normally a configuration batch file.
-        $Command
+        [Parameter(Mandatory=$true)]
+        [string] $Command
     )
 
     $Command = "`"" + $Command + "`""

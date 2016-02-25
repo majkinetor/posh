@@ -2,7 +2,7 @@
 #http://stackoverflow.com/questions/4405091/how-do-you-avoid-over-populating-the-path-environment-variable-in-windows
 
 <#
-    Last Change: 10-Feb-2016.
+    Last Change: 12-Feb-2016.
     Author: M. Milic <miodrag.milic@gmail.com>
 
 .SYNOPSIS
@@ -45,8 +45,7 @@ function Repair-Path() {
     }
 
     function double() {
-        $d = $v.npath.Contains($v.dir + $v.sep) -or $v.npath.Contains($v.edir + $v.sep)
-        $d = $d -or $v.npath.Contains( $v.dir + '\' + $v.sep) -or $v.npath.Contains( $v.edir + '\' + $v.sep )
+        $d = $v.npath.ToLower() -match "$([Regex]::Escape($v.dir.ToLower()))$($v.sep)?" -or $v.npath.ToLower() -match "$([Regex]::Escape($v.edir.ToLower()))$($v.sep)?"
         if (!$d) { return $false }
 
         $s.Duplicates += 1
@@ -67,7 +66,6 @@ function Repair-Path() {
         "  Duplicates: $($s.Duplicates)"
         "  Empty paths: $($s.Empty)"
         "  Trailing separators: $($s.Trails)"
-
         "  Non existent: $($s.Removed.length)"
         $s.Removed | % { "    $_" }
 
@@ -75,8 +73,10 @@ function Repair-Path() {
             "User selected: $($s.user.length)"
             $s.user | % { "    $_" }
         }
+        "Total paths: " + ($v.npath -split ';').Length
         "Old path length: $($v.path.length)"
-        "New path length: $($v.npath.length)"
+        "New path length: $($v.npath.length)" 
+        "Gained: " + ($v.path.length - $v.npath.length)
         check_path_len $v.npath
     }
 
@@ -114,18 +114,20 @@ StringBuilder shortPath,uint bufferSize);
 
     $answer = 'keep'
     $v.path -split $v.sep | % {
-        if ($_.Trim() -eq '') {  $s.Empty += 1; return }
-        $v.dir = $_
+        $v.dir = $_.Trim()
+
+        if ($v.dir -eq '') {  $s.Empty += 1; return }
+
+        if ($v.dir.EndsWith("\")) { $v.dir = $v.dir -replace '.$'; $s.Trails += 1 }
+
         $v.edir = [System.Environment]::ExpandEnvironmentVariables($v.dir)
 
-        if ( double ){ return }
+        if ( double ) { return }
         if ( invalid) { return }
 
         if ($Interactive) { $answer = choice }
         if (('keep','stop') -contains $answer) {
             if ($answer -eq 'stop') { Write-Verbose "User stopped interaction"; $answer = 'keep'; $Interactive = $false }
-
-            if ($v.dir.EndsWith("\")) { $v.dir = $v.dir -replace '.$'; $s.Trails += 1 }
 
             if ($Shrink) { $v.dir = shrink $v.dir }
             if ($Expand) { $v.dir = expand $v.dir }
@@ -133,7 +135,7 @@ StringBuilder shortPath,uint bufferSize);
         }
 
         if ($answer -eq 'remove' ) {
-            Write-Verbose "User removed path: $v.dir"
+            Write-Verbose "User removed path: $($v.dir)"
             $s.user += $v.dir
         }
     }
@@ -153,7 +155,7 @@ StringBuilder shortPath,uint bufferSize);
     } else { "Path not changed, only results are shown:" }
 
     show_stats
-    $v.npath
+    $v.npath -split ';' | sort
 }
 
-#Repair-Path -WhatIf:$true -Verbose -Shrink
+#Repair-Path -WhatIf
