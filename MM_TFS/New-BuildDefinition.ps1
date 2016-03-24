@@ -1,5 +1,5 @@
 
-function Create-BuildDefinition($JsonFile) {
+function New-BuildDefinition($JsonFile) {
 
     $uri = "$proj_uri/_apis/build/definitions?api-version=" + $tfs.api_version
 

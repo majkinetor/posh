@@ -1,5 +1,5 @@
 
-function Create-Project($Name, $Description) {
+function New-Project($Name, $Description) {
     $uri = "$collection_uri/_apis/projects/?api-version=" + $tfs.api_version
     $uri
     $body = @{

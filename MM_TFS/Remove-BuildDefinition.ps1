@@ -1,5 +1,5 @@
 
-function Delete-BuildDefinition($Id) {
+function Remove-BuildDefinition($Id) {
 
     if ($Id.GetType() -eq [string]) { $Id = Get-BuildDefinitions | ? name -eq $Id | select -Expand id }
     if ($Id -eq $null) { throw "Resource with that name doesn't exist" }

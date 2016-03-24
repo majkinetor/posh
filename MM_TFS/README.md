@@ -30,7 +30,7 @@ Function `d` is used to set defaults - it will use first argument if it exists o
 Functions
 =========
 
-The following section list some example usages.
+The following section list some example usages. Before using any function you must specify your TFS credentials in `$tfs.credentials` using `Get-Credential`.
 
 Projects
 --------
@@ -43,7 +43,7 @@ Builds
 ------
 
     Get-Builds
-    Get-BuildLogs -Last
+    Get-BuildLogs
     Get-BuildLogs 220
 
 
