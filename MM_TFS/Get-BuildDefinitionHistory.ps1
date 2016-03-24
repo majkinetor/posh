@@ -1,6 +1,6 @@
 function Get-BuildDefinitionHistory($Id, [switch]$Raw) {
-    if ($Id -eq $null) { throw "Resource with that name doesn't exist" }
     if ($Id.GetType() -eq [string]) { $Id = Get-BuildDefinitions | ? name -eq $Id | select -Expand id }
+    if ($Id -eq $null) { throw "Build definition with that name or id doesn't exist" }
 
     $uri = "$proj_uri/_apis/build/definitions/$($Id)/revisions?api-version=" + $tfs.api_version
     $r = Invoke-RestMethod -Uri $uri -Method Get -Credential $tfs.credential
