@@ -6,7 +6,7 @@ This is powershell module to communicate with TFS 2015 via its [REST interface](
 Configuration
 =============
 
-Module uses global variable `$tfs` for its configuration. The most basic config would be:
+Module uses global variable `$tfs` for its configuration. The minimal configuration would be:
 
     $tfs = @{
         root_url    = 'http://tfs015:8080/tfs'
@@ -52,6 +52,6 @@ Build Definitions
 
     Get-BuildDefinition BuildXYZ -Export
     Get-BuildDefinitionHistory BuildXYZ
-    Create-BuildDefinition -JsonFile ProjectXYZ-BuildXYZ.json
+    New-BuildDefinition -JsonFile ProjectXYZ-BuildXYZ.json
     Update-BuildDefinition -JsonFile ProjectXYZ-BuildXYZ.json
-    Delete-BuildDefinition BuildXYZ
+    Remove-BuildDefinition BuildXYZ
