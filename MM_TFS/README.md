@@ -6,26 +6,22 @@ This is powershell module to communicate with TFS 2015 via its [REST interface](
 Configuration
 =============
 
-Module uses global variable `$tfs` for its configuration. The minimal configuration would be:
+Module uses global variable `$tfs` for its configuration:
 
     $tfs = @{
         root_url    = 'http://tfs015:8080/tfs'
+        collection  = 'DefaultCollection'
         project     = 'ProjectXYZ'
         credential  = Get-Credential
+        api_version = '1.0'
     }
 
+Some attributes will take defaults if you don't specify them:
 
-The module will merge user defined `$tfs` hash with its defaults:
+    $tfs.collection  = 'DefaultCollection'
+    $tfs.api_version = '2.0'
 
-    $tfs = @{
-        root_url    = $tfs.root_url
-        collection  = d $tfs.collection 'DefaultCollection'
-        project     = $tfs.project
-        api_version = d $tfs.api_version '2.0'
-        credential  = $tfs.credential
-    }
-
-Function `d` is used to set defaults - it will use first argument if it exists or second otherwise. If you need to work constantly on a single project put this setting in your `$PROFILE`.
+If you need to work constantly on a single project put this setting in your `$PROFILE`. To manage multiple projects or collections or tfs servers you could create multiple functions for each scenario that each set `$global:tfs` in its own way.
 
 Functions
 =========
