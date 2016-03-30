@@ -17,7 +17,7 @@ $tfs = [ordered]@{
     credential  = $tfs.credential
 }
 
-if (gmo -ListAvailable CredentialManager -ea 0) {
+if (($tfs.credential -eq $null) -and (gmo -ListAvailable CredentialManager -ea 0)) {
     try { $cred = Get-StoredCredential -Target $tfs.root_url } catch {}
     if ($cred -eq $null) {
         $user_default = "$Env:USERDOMAIN\$Env:USERNAME"

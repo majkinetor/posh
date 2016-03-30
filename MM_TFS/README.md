@@ -1,7 +1,7 @@
 MM_TFS
 ======
 
-This is Powershell module to communicate with TFS 2015 via its [REST interface](https://www.visualstudio.com/integrate/get-started/rest/basics). It provides several functions which allow you create, update, export and import build definitions, get build logs, get projects etc.
+This is Powershell module to communicate with TFS 2015 via its [REST interface](https://www.visualstudio.com/integrate/get-started/rest/basics). It provides several functions which allow you to create, update, export and import build definitions, get build logs, get projects etc.
 
 Configuration
 =============
@@ -26,7 +26,7 @@ If you need to work constantly on a single project put this setting in your `$PR
 Functions
 =========
 
-The following section list some example usages. Before using any function you must specify your TFS credentials in `$tfs.credentials` using `Get-Credential`. To save a credential in the Windows Credentials Vault you must have [CredentialManager](https://github.com/davotronic5000/PowerShell_Credential_Manager) module installed.
+The following section list some example usages. Before using any function you must specify your TFS credentials in `$tfs.credentials` using `Get-Credential`. To save a credential in the Windows Credentials Vault you must have [CredentialManager](https://github.com/davotronic5000/PowerShell_Credential_Manager) module installed. For this to work `$tfs.Credential` shouldn't be specified; as soon as you import the module it will ask you for your TFS username and password which will be stored in Windows Credentials Vault for subsequent use.
 
 Projects
 --------
