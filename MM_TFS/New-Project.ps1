@@ -1,4 +1,12 @@
+# Author: Miodrag Milic <miodrag.milic@gmail.com>
+# Last Change: 30-Mar-2016.
 
+<#
+.SYNOPSIS
+    Create new TFS project
+.NOTE
+    Not supported on on-premise TFS
+#>
 function New-Project($Name, $Description) {
     $uri = "$collection_uri/_apis/projects/?api-version=" + $tfs.api_version
     $uri

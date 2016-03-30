@@ -1,8 +1,34 @@
-function Get-BuildLogs($Id=$null) {
+# Author: Miodrag Milic <miodrag.milic@gmail.com>
+# Last Change: 30-Mar-2016.
+
+<#
+.SYNOPSIS
+    Get the unified build logs for the TFS build
+
+.EXAMPLE
+    PS> Get-BuildLogs
+
+    Returns logs of the latest build
+
+.EXAMPLE
+    PS> Get-BuildLogs 250
+
+    Returns logs of the build by id
+#>
+function Get-BuildLogs{
+    [CmdletBinding()]
+    param(
+        #Id of the build, by default the latest build is used.
+        [string]$Id
+    )
+
     if ($Id -eq $null) { $Id = get-builds -Raw | select -First 1 -Expand id }
     if ($Id -eq $null) { throw "Can't find latest build or there are no builds" }
+    Write-Verbose "Build id: $Id"
 
     $uri = "$proj_uri/_apis/build/builds/$Id/logs?api-version=" + $tfs.api_version
+    Write-Verbose "Logs URI: $uri"
+
     $r = Invoke-RestMethod -Uri $uri -Method Get -Credential $tfs.credential
 
     $lines = @()
@@ -13,6 +39,7 @@ function Get-BuildLogs($Id=$null) {
         $new_url[2] = $root_server_name
         $new_url = $new_url -join '/'
 
+        Write-Verbose "Log URI: $new_url"
         $l = Invoke-RestMethod -Uri $new_url -Method Get -Credential $tfs.credential
         $lines += $l.value -replace '\..+?Z'
         $lines += "="*150
