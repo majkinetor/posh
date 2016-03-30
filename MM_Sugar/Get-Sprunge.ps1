@@ -1,5 +1,5 @@
 # Author: Miodrag Milic <miodrag.milic@gmail.com>
-# Last Change: 09-Feb-2016.
+# Last Change: 30-Mar-2016.
 
 <#
 .SYNOPSIS
@@ -15,7 +15,7 @@
 
     Send content of the file, highlight powershell and open it in the browser
 #>
-function get-sprunge([string]$FileType=".", [switch]$Open) {
+function Get-Sprunge([string]$FileType=".", [switch]$Open) {
     if (!(gcm curl.exe -ea 0)) { throw 'Sprunge requires curl. Use cinst curl.exe' }
     $url = $input | curl.exe -s -F 'sprunge=<-' -H  "Expect: " http://sprunge.us
     $url += "?$FileType"
