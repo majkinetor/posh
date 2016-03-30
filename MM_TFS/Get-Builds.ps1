@@ -6,6 +6,7 @@
     Get the TFS build list
 #>
 function Get-Builds {
+    [CmdletBinding()]
     param (
         #Return raw data insted of the table
         [switch] $Raw,
