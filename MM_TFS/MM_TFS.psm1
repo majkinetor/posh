@@ -17,6 +17,18 @@ $tfs = [ordered]@{
     credential  = $tfs.credential
 }
 
+if (gmo -ListAvailable CredentialManager -ea 0) {
+    try { $cred = Get-StoredCredential -Target $tfs.root_url } catch {}
+    if ($cred -eq $null) {
+        $user = Read-Host -Prompt "TFS Username ($Env:USERDOMAIN\$Env:USERNAME)"
+        $pass = Read-Host -Prompt "TFS Password" -AsSecureString
+        $cred = New-Object System.Net.NetworkCredential('', $pass)
+        New-StoredCredential -Target $tfs.root_url -UserName $user -Password $cred.password -Persist LOCAL_MACHINE | Out-Null
+        Remove-Variable cred
+    }
+    try { $tfs.credential = Get-StoredCredential -Target $tfs.root_url } catch {}
+} else { Write-Warning 'CredentialManager module is not available' }
+
 Export-ModuleMember -Alias * -Variable tfs
 . "$PSScriptRoot\_globals.ps1"
 
