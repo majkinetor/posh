@@ -1,5 +1,5 @@
 # Author: Miodrag Milic <miodrag.milic@gmail.com>
-# Last Change: 30-Mar-2016.
+# Last Change: 05-Apr-2016.
 
 <#
 .SYNOPSIS
@@ -22,7 +22,7 @@ function Get-BuildLogs{
         [string]$Id
     )
 
-    if ($Id -eq $null) { $Id = get-builds -Raw | select -First 1 -Expand id }
+    if ($Id -eq '') { $Id = get-builds -Raw | select -First 1 -Expand id }
     if ($Id -eq $null) { throw "Can't find latest build or there are no builds" }
     Write-Verbose "Build id: $Id"
 
