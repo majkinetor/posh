@@ -14,7 +14,11 @@ function Clear-EventLogs {
 function Get-EventLogsErrors( [int] $First=50 ) {
     $r = @()
     Get-EventLog * | select -Expand Log | % {
-        $r += Get-EventLog $_ | ? { $_.EntryType -eq 'Error' }
+        $l = $_
+        try {
+            $r += Get-EventLog $l -ea 0 | ? { $_.EntryType -eq 'Error' }
+        }
+        catch { Write-Warning "$($l): $_" }
     }
     $r
 }
