@@ -20,3 +20,7 @@ To import-module from SMB share without security warning:
     mkdir -force $r
     sp $r UNCAsIntranet 1
 ```
+
+---
+
+License: [MIT](https://opensource.org/licenses/MIT)
