@@ -15,7 +15,8 @@ function Get-TFSBuildDefinitionHistory{
     )
     check_credential
 
-    if ($Id.GetType() -eq [string]) { $Id = Get-TFSBuildDefinitions | ? name -eq $Id | select -Expand id }
+
+    if (($Id -ne $null) -and ($Id.GetType() -eq [string])) { $Id = Get-TFSBuildDefinitions | ? name -eq $Id | select -Expand id }
     if ($Id -eq $null) { throw "Build definition with that name or id doesn't exist" }
     Write-Verbose "Build definition history id: $Id"
 

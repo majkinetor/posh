@@ -13,7 +13,7 @@ function Remove-TFSBuildDefinition {
     )
     check_credential
 
-    if ($Id.GetType() -eq [string]) { $Id = Get-TFSBuildDefinitions | ? name -eq $Id | select -Expand id }
+    if (($Id -ne $null) -and ($Id.GetType() -eq [string])) { $Id = Get-TFSBuildDefinitions | ? name -eq $Id | select -Expand id }
     if ($Id -eq $null) { throw "Resource with that name doesn't exist" }
     Write-Verbose "Build definition id: $Id"
 
