@@ -1,16 +1,17 @@
 # Author: Miodrag Milic <miodrag.milic@gmail.com>
-# Last Change: 30-Mar-2016.
+# Last Change: 11-Apr-2016.
 
 <#
 .SYNOPSIS
     Get the list of projects from the TFS server
 #>
-function Get-Projects{
+function Get-TFSProjects{
     [CmdletBinding()]
     param(
         # Return raw data instead of the table
         [switch]$Raw
     )
+    check_credential
 
     $uri = "$collection_uri/_apis/projects?api-version=" + $tfs.api_version
     Write-Verbose "URI: $uri"

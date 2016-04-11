@@ -1,11 +1,11 @@
 # Author: Miodrag Milic <miodrag.milic@gmail.com>
-# Last Change: 30-Mar-2016.
+# Last Change: 11-Apr-2016.
 
 <#
 .SYNOPSIS
     Get the build definition history
 #>
-function Get-BuildDefinitionHistory{
+function Get-TFSBuildDefinitionHistory{
     [CmdletBinding()]
     param(
         # Build definition history id [int] or name [string]
@@ -13,8 +13,9 @@ function Get-BuildDefinitionHistory{
         # Return raw data instead of the table
         [switch]$Raw
     )
+    check_credential
 
-    if ($Id.GetType() -eq [string]) { $Id = Get-BuildDefinitions | ? name -eq $Id | select -Expand id }
+    if ($Id.GetType() -eq [string]) { $Id = Get-TFSBuildDefinitions | ? name -eq $Id | select -Expand id }
     if ($Id -eq $null) { throw "Build definition with that name or id doesn't exist" }
     Write-Verbose "Build definition history id: $Id"
 

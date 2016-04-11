@@ -1,28 +1,29 @@
 # Author: Miodrag Milic <miodrag.milic@gmail.com>
-# Last Change: 05-Apr-2016.
+# Last Change: 11-Apr-2016.
 
 <#
 .SYNOPSIS
     Get the unified build logs for the TFS build
 
 .EXAMPLE
-    PS> Get-BuildLogs
+    PS> Get-TFSBuildLogs
 
     Returns logs of the latest build
 
 .EXAMPLE
-    PS> Get-BuildLogs 250
+    PS> Get-TFSBuildLogs 250
 
     Returns logs of the build by id
 #>
-function Get-BuildLogs{
+function Get-TFSBuildLogs{
     [CmdletBinding()]
     param(
         #Id of the build, by default the latest build is used.
         [string]$Id
     )
+    check_credential
 
-    if ($Id -eq '') { $Id = get-builds -Raw | select -First 1 -Expand id }
+    if ($Id -eq '') { $Id = Get-TFSBuilds -Raw | select -First 1 -Expand id }
     if ($Id -eq $null) { throw "Can't find latest build or there are no builds" }
     Write-Verbose "Build id: $Id"
 

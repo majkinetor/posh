@@ -1,5 +1,5 @@
 # Author: Miodrag Milic <miodrag.milic@gmail.com>
-# Last Change: 30-Mar-2016.
+# Last Change: 11-Apr-2016.
 
 <#
 .SYNOPSIS
@@ -8,11 +8,12 @@
 .NOTE
     Build definition property "revision" must point to the latest one in order for import to succeed.
 #>
-function New-BuildDefinition {
+function New-TFSBuildDefinition {
     [CmdletBinding()]
     param (
         [string] $JsonFile
     )
+    check_credential
 
     if (!(Test-Path $JsonFile)) {throw "File doesn't exist: $JsonFile" }
 

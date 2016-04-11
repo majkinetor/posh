@@ -1,5 +1,5 @@
 # Author: Miodrag Milic <miodrag.milic@gmail.com>
-# Last Change: 30-Mar-2016.
+# Last Change: 11-Apr-2016.
 
 <#
 .SYNOPSIS
@@ -7,7 +7,9 @@
 .NOTE
     Not supported on on-premise TFS
 #>
-function New-Project($Name, $Description) {
+function New-TFSProject($Name, $Description) {
+    check_credential
+
     $uri = "$collection_uri/_apis/projects/?api-version=" + $tfs.api_version
     $uri
     $body = @{

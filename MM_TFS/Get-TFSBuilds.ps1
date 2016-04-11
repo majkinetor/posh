@@ -1,11 +1,11 @@
 # Author: Miodrag Milic <miodrag.milic@gmail.com>
-# Last Change: 30-Mar-2016.
+# Last Change: 11-Apr-2016.
 
 <#
 .SYNOPSIS
     Get the TFS build list
 #>
-function Get-Builds {
+function Get-TFSBuilds {
     [CmdletBinding()]
     param (
         #Return raw data insted of the table
@@ -13,6 +13,7 @@ function Get-Builds {
         #Number of latest builds to return, by default 15.
         [int] $First=15
     )
+    check_credential
 
     $uri = "$proj_uri/_apis/build/builds?api-version=" + $tfs.api_version
     Write-Verbose "URI: $uri"
