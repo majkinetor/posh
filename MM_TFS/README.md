@@ -89,7 +89,7 @@ All functions have a `Verbose` parameter that shows very detailed logs of every 
     VERBOSE: received 793807-byte response of content type application/json; charset=utf-8; api-version=2.0
     VERBOSE: Build id: 1456
     VERBOSE: Logs URI: http://tfs015:8080/tfs/DefaultCollection/ProjectXYZ/_apis/build/builds/1456/logs?api-version=2.0
-    VERBOSE: GET http://10.1.6.27:8080/tfs/TrezorCollection/Trezor/_apis/build/builds/1456/logs?api-version=2.0 with 0-byte payload
+    VERBOSE: GET http://10.1.6.27:8080/tfs/DefaultCollection/ProjectXYZ/_apis/build/builds/1456/logs?api-version=2.0 with 0-byte payload
     VERBOSE: received 738-byte response of content type application/json; charset=utf-8; api-version=2.0
     VERBOSE: Log URI: http://tfs015:8080/tfs/DefaultCollection/cc756267-fb53-4148-906f-471588d87bcb/_apis/build/builds/1456/logs/1
     ...
