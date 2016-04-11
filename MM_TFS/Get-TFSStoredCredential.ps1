@@ -10,15 +10,15 @@ function Get-TFSStoredCredential {
     param()
 
     if ($tfs.root_url -eq $null) { throw 'You must set $tfs.root_url in order to get stored credentials' }
-    if (!(gmo -ListAvailable CredentialManager -ea 0)) {  Write-Warning 'CredentialManager module is not available'; return }
+    if (gmo -ListAvailable CredentialManager -ea 0)  {
+        $cm = $true
+        try {
+            Write-Verbose "Trying to get storred credentials for '$($tfs.root_url)'"
+            $cred = Get-StoredCredential -Target $tfs.root_url
+        } catch { }
+    }
 
-    try {
-        Write-Verbose "Trying to get storred credentials for '$($tfs.root_url)'"
-        $cred = Get-StoredCredential -Target $tfs.root_url
-    } catch { }
-
-    if ($cred -eq $null) { $cred = New-TFSCredential }
-    else { Write-Verbose 'Stored credentials retrieved' }
+    if ($cred -eq $null) { $cred = New-TFSCredential } else { Write-Verbose 'Stored credentials retrieved' }
 
     $cred
 }

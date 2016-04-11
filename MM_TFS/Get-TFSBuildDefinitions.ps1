@@ -14,7 +14,7 @@ function Get-TFSBuildDefinitions {
     check_credential
 
     $uri = "$proj_uri/_apis/build/definitions?api-version=" + $tfs.api_version
-    Write-Host "URI: $uri"
+    Write-Verbose "URI: $uri"
 
     $r = Invoke-RestMethod -Uri $uri -Method Get -Credential $tfs.credential
     if ($Raw) { return $r.value }

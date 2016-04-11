@@ -8,16 +8,15 @@
 function New-TFSCredential {
     [CmdletBinding()]
     param(
-        # TFS Credentials.
-        [PSCredential] $Credential,
+        # TFS credential
+        [PSCredential] $Credential
     )
 
-    Write-Verbose "Get TFS credentials for '$($tfs.root_url)'"
+    Write-Verbose "New TFS credentials for '$($tfs.root_url)'"
     if ($Credential -eq $null) { $Credential = Get-Credential }
     if ($Credential -eq $null) { Write-Warning 'Aborted'; return }
 
-    if (!$Store) { return }
-    if (!(gmo -ListAvailable CredentialManager -ea 0)) {  Write-Warning 'CredentialManager module is not available'; return $Credential }
+    if (!(gmo -ListAvailable CredentialManager -ea 0)) { Write-Warning 'CredentialManager module is not available'; return $Credential }
 
     if (($tfs.root_url -eq '') -or ($tfs.root_url -eq $null)) { throw 'You must set $tfs.root_url in order to store credentials' }
 
