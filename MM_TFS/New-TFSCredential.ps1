@@ -22,7 +22,7 @@ function New-TFSCredential {
     if (!$Store) { return }
     if (!(gmo -ListAvailable CredentialManager -ea 0)) {  Write-Warning 'CredentialManager module is not available'; return $Credential }
 
-    if ($tfs.root_url -eq $null) { throw 'You must set $tfs.root_url in order to store credentials' }
+    if (($tfs.root_url -eq '') -or ($tfs.root_url -eq $null)) { throw 'You must set $tfs.root_url in order to store credentials' }
 
     Write-Verbose "Storing credential for target '$($tfs.root_url)'"
     New-StoredCredential -Target $tfs.root_url -UserName $Credential.UserName -Password $Credential.GetNetworkCredential().Password -Persist LOCAL_MACHINE | Out-Null
