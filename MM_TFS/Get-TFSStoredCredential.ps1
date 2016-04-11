@@ -17,7 +17,7 @@ function Get-TFSStoredCredential {
         $cred = Get-StoredCredential -Target $tfs.root_url
     } catch { }
 
-    if ($cred -eq $null) { $cred = New-TFSCredential -Store }
+    if ($cred -eq $null) { $cred = New-TFSCredential }
     else { Write-Verbose 'Stored credentials retrieved' }
 
     $cred

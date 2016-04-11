@@ -10,9 +10,6 @@ function New-TFSCredential {
     param(
         # TFS Credentials.
         [PSCredential] $Credential,
-
-        # Store credential in the Windows Credential Valut
-        [switch] $Store
     )
 
     Write-Verbose "Get TFS credentials for '$($tfs.root_url)'"

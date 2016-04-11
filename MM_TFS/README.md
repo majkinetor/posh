@@ -34,7 +34,10 @@ Functions
 
 The following section list some example usages. 
 
-Module keeps TFS credentials in `$tfs.credentials`. If not specified you will be prompted for the credentials when running any of the functions. If the module [CredentialManager](https://github.com/davotronic5000/PowerShell_Credential_Manager) is available (to install run `Install-Module CredentialManager` in Powreshell 5+) credentials will be stored in the Windows Credential vault.
+TFS Credentials
+---------------
+
+Module keeps TFS credential in the `$tfs.Credentials`. If not specified you will be prompted for the credentials when running any of the functions. If the module [CredentialManager](https://github.com/davotronic5000/PowerShell_Credential_Manager) is available (to install run `Install-Module CredentialManager` in Powreshell 5+) credentials will be stored in the Windows Credential vault. To later change the stored credentials delete them using the Control Panel (Manage Windows Credentials).
 
 Projects
 --------
