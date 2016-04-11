@@ -1,5 +1,5 @@
 <# .SYNOPSIS
-    Retreves wather using wttr.in
+    Retreves weather using wttr.in
 
    .EXAMPLE
     wtr
