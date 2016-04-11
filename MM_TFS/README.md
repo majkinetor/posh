@@ -29,15 +29,10 @@ If you need to work constantly on a single project put this setting in your `$PR
 
 Then, prior to calling any module function run `Set-TestTFSCreds`.
 
-Functions
-=========
-
-The following section list some example usages. 
-
 TFS Credentials
 ---------------
 
-Module keeps TFS credential in the `$tfs.Credentials`. If not specified you will be prompted for the credentials when running any of the functions. If the module [CredentialManager](https://github.com/davotronic5000/PowerShell_Credential_Manager) is available (to install run `Install-Module CredentialManager` in Powreshell 5+) credentials will be stored in the Windows Credential Vault and you will have a feature to specify credential only on first run. 
+Module keeps TFS credential in the `$tfs.Credentials`. If not specified you will be prompted for the credentials when running any of the functions. If the module [CredentialManager](https://github.com/davotronic5000/PowerShell_Credential_Manager) is available (to install it run `Install-Module CredentialManager` in Powreshell 5+) credentials will be stored in the Windows Credential Manager and after first run, you will be able to use any function in any PS session using your stored credentials.
 
 To use ad-hoc credentials when you have your main credential stored simply use: 
     
@@ -46,6 +41,11 @@ To use ad-hoc credentials when you have your main credential stored simply use:
 This way stored credentials will be overridden only for the current session. To change the stored credentials for all subsequent sessions either delete them using the Control Panel (Manage Windows Credentials) and run any function again or use the following command:
 
     $tfs.Credentials = New-TFSCredential    #Get credential and store it in Credential Manager.
+
+Functions
+=========
+
+The following section list some example usages. 
 
 Projects
 --------
