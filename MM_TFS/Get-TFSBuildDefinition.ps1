@@ -1,5 +1,5 @@
 # Author: Miodrag Milic <miodrag.milic@gmail.com>
-# Last Change: 11-Apr-2016.
+# Last Change: 12-Apr-2016.
 
 <#
 .SYNOPSIS
@@ -11,9 +11,10 @@
     Get the build definition by name
 
 .EXAMPLE
-    PS> Get-BuildDefinition 5 -Export
+    PS> Get-BuildDefinition 5 -OutFile .
 
-    Exports the build defintiion to json file in the current directory
+    Exports the build defintiion to json file in the current directory. '.' is a special value for the file
+    to be automatically named as Project-Build_Name.json in the current directory
 #>
 function Get-TFSBuildDefinition{
     [CmdletBinding()]
@@ -22,8 +23,8 @@ function Get-TFSBuildDefinition{
         [string]$Id,
         #Return raw data instead of table
         [switch]$Raw,
-        #Export the build to the file named Poject-BuildName.json
-        [switch]$Export
+        #Export the build to the specified JSON file
+        [string]$OutFile
     )
     check_credential
 
@@ -38,7 +39,8 @@ function Get-TFSBuildDefinition{
     if ($Raw) { return $r }
 
     $res = $r # | select name, type, quality, queue, Build, Triggers, Options, Variables, RetentionRules, Repository
-    if ($Export) {
-        $res | ConvertTo-Json -Depth 100 | Out-File ("{0}-{1}.json" -f $tfs.project, $r.Name) -Encoding UTF8
+    if ($OutFile) {
+        if ($OutFile -eq '.') { $OutFile = "{0}-{1}.json" -f $tfs.project, $r.Name }
+        $res | ConvertTo-Json -Depth 100 | Out-File $OutFile -Encoding UTF8
     } else { $res }
 }
