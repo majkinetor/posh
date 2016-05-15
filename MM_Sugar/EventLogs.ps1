@@ -3,7 +3,6 @@
     Clear all event logs
 #>
 function Clear-EventLogs {
-    [CmdletBinding()]
     Get-EventLog * | % { Clear-EventLog $_.Log }
 
     #Clear this one again as it accumulates clearing events from previous step
