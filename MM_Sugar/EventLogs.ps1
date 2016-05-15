@@ -21,6 +21,7 @@ function Get-EventLogsErrors( [int] $First=50 ) {
         catch { Write-Warning "$($l): $_" }
     }
     $global:err = $r | sort TimeWritten -Descending
+    $global:err
 }
 
 sal err  Get-EventLogsErrors
