@@ -1,6 +1,5 @@
-sal e       exit
-sal q       exit
 sal remove  Remove-Module
+sal import  Import-Module
 sal new     New-Object
 
 #Remove problematic default aliases

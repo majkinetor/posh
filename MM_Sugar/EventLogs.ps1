@@ -9,7 +9,7 @@ function Clear-EventLogs {
 
 <#
 .SYNOPSIS
-    Get latest event log errors
+    Get latest event logs errors
 #>
 function Get-EventLogsErrors( [int] $First=50 ) {
     $r = @()
@@ -20,7 +20,8 @@ function Get-EventLogsErrors( [int] $First=50 ) {
         }
         catch { Write-Warning "$($l): $_" }
     }
-    $r
+    $global:err = $r | sort TimeWritten -Descending
 }
 
-sal err Get-EventLogsErrors
+sal err  Get-EventLogsErrors
+sal clre Clear-EventLogs
