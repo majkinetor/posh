@@ -3,7 +3,11 @@
     Clear all event logs
 #>
 function Clear-EventLogs {
+    [CmdletBinding()]
     Get-EventLog * | % { Clear-EventLog $_.Log }
+
+    #Clear this one again as it accumulates clearing events from previous step
+    Clear-Eventlog System
     Get-EventLog *
 }
 
@@ -11,7 +15,7 @@ function Clear-EventLogs {
 .SYNOPSIS
     Get latest event logs errors
 #>
-function Get-EventLogsErrors( [int] $First=50 ) {
+function Get-EventLogsErrors() {
     $r = @()
     Get-EventLog * | select -Expand Log | % {
         $l = $_
