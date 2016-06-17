@@ -4,14 +4,17 @@
 #>
 function Clear-EventLogs {
     Get-EventLog * | % { Clear-EventLog $_.Log }
+
+    #Clear this one again as it accumulates clearing events from previous step
+    Clear-Eventlog System
     Get-EventLog *
 }
 
 <#
 .SYNOPSIS
-    Get latest event log errors
+    Get latest event logs errors
 #>
-function Get-EventLogsErrors( [int] $First=50 ) {
+function Get-EventLogsErrors() {
     $r = @()
     Get-EventLog * | select -Expand Log | % {
         $l = $_
@@ -20,7 +23,9 @@ function Get-EventLogsErrors( [int] $First=50 ) {
         }
         catch { Write-Warning "$($l): $_" }
     }
-    $r
+    $global:err = $r | sort TimeWritten -Descending
+    $global:err
 }
 
-sal err Get-EventLogsErrors
+sal err  Get-EventLogsErrors
+sal clre Clear-EventLogs
