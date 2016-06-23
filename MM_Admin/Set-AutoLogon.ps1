@@ -32,7 +32,7 @@ function Set-AutoLogon {
         [String]$Password,
 
         #Sets the number of times the system would reboot without asking for credentials.
-        [String]$LogonCount,
+        [String]$LogonCount=100000,
 
         #Script: Provide Full path of the script for execution after server reboot
         [String]$Script
