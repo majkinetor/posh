@@ -1,4 +1,4 @@
-# Last Change: 09-Feb-2016.
+# Last Change: 16-Aug-2016.
 # Author: M. Milic <miodrag.milic@gmail.com>
 
 #requires -version 4.0
@@ -60,7 +60,9 @@ function Register-LoginTask()
     $isScript = (gi $Execute).Extension -eq '.ps1'
 
     $user = "$env:USERDOMAIN\$env:USERNAME"
-    $params = @{ Execute = $Execute }
+    Write-Verbose "User: $user"
+
+    $params = @{ Execute = $Execute; WorkingDirectory = Split-Path $Execute }
     if (![string]::IsNullOrWhiteSpace($Arguments)) { $params.Argument = $Arguments }
     $a = New-ScheduledTaskAction @params
     $t = New-ScheduledTaskTrigger -AtLogon -User $user -RandomDelay $Delay
@@ -81,7 +83,7 @@ function Register-LoginTask()
         $sa = "-NoProfile -NoLogo -WindowStyle Hidden -NonInteractive -ExecutionPolicy Bypass -Command `"cd `$HOME; . '$scriptPath' $Arguments`""
         Write-Verbose "Registering login script. Powershell arguments:`n$sa"
         $params.Action = New-ScheduledTaskAction -Execute "$PSHome\powershell.exe" -Argument $sa
-    } else { Write-Verbose "Registering login executable:`n$Execute $Arguments" }
+    } else { Write-Verbose "Registering login executable: $Execute $Arguments" }
 
     Register-ScheduledTask @params
 }
