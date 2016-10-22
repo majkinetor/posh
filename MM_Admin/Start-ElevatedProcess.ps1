@@ -1,5 +1,5 @@
 # Author: Miodrag Milic <miodrag.milic@gmail.com>
-# Last Change: 18-May-2015.
+# Last Change: 22-Oct-2016.
 
 #requires -version 2
 
@@ -18,7 +18,7 @@
     the current directory to the one of the calling shell.
 
 .EXAMPLE
-    sudo -Last -NoExit
+    sudo -Last -Exit
 
     Runs the last powershell command with the adminsitrative privileges and
     keeps the shell from closing.
@@ -55,11 +55,11 @@ function Start-ElevatedProcess {
         [Parameter(ParameterSetName='last')]
         [switch] $Last,
 
-        # Leave the eveleated 'powershell.exe' or 'cmd.exe' window open.
+        # Close the eveleated shell when finished.
         [Parameter(ParameterSetName='last')]
         [Parameter(ParameterSetName='command')]
         [Parameter(ParameterSetName='script')]
-        [switch] $NoExit,
+        [switch] $Exit,
 
         # Wait for process to exit before returning
         [switch] $Wait,
@@ -80,7 +80,7 @@ function Start-ElevatedProcess {
 
     $argList = @()
     if ($program -match '[\\]?powershell(.exe)?$') {
-        if ($NoExit -or (!$Command -and !$Script -and !$Last))  { $argList += '-NoExit' }
+        if ($Exit)  { $argList += '-NoExit' }
 
         $cmd = '-Command "' + "cd '$pwd'" + '"'
         if ($Command) { $cmd += "; {0}" -f $Command }
@@ -93,8 +93,8 @@ function Start-ElevatedProcess {
         if ($Script)  { $argList += "-File ""{0}""" -f (Resolve-Path $script) }
     }
     elseif($program -match '[\\]?cmd(.exe)?$'){
-        $a = '/C';
-        if ($NoExit)  { $a = '/K' }
+        $a = '/K';
+        if ($Exit)  { $a = '/C' }
         if ($Command) { $argList += "$a ""cd ""$pwd"" & $command""" }
         if ($Script)  { $argList += "$a ""{0}""" -f (Resolve-Path $script) }
     }
