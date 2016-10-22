@@ -80,7 +80,7 @@ function Start-ElevatedProcess {
 
     $argList = @()
     if ($program -match '[\\]?powershell(.exe)?$') {
-        if ($Exit)  { $argList += '-NoExit' }
+        if (!$Exit)  { $argList += '-NoExit' }
 
         $cmd = '-Command "' + "cd '$pwd'" + '"'
         if ($Command) { $cmd += "; {0}" -f $Command }
