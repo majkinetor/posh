@@ -1,5 +1,5 @@
 <#
-    Last Change: 24-Jan-2016.
+    Last Change: 29-Nov-2016.
     Author: M. Milic <miodrag.milic@gmail.com>
 
 .SYNOPSIS
@@ -9,11 +9,14 @@
     Absolute or relative directory path. If ommited, defaults to $pwd.
 
 #>
-function Add-Path($path=$pwd, [switch]$Prepend)
+function Add-Path($path=$pwd, [switch]$Prepend, [switch]$User)
 {
+
+    $type = if ($User) { 'User' } else { 'Machine' }
+
     $path=(gi $path).FullName
     if (!(Test-Path $path)) { Write-Error "Path doesn't exist: $path"; return; }
-    $Env:Path = [System.Environment]::GetEnvironmentVariable("PATH", "Machine")
+    $Env:Path = [System.Environment]::GetEnvironmentVariable("PATH", $type)
 
     if (!$Env:path.EndsWith(";")) {$Env:Path += ";"}
     if ($Env:Path -like "*$path*") {return}
@@ -21,7 +24,7 @@ function Add-Path($path=$pwd, [switch]$Prepend)
     if ($Prepend) { $Env:Path = $path + $Env:Path }
     else { $Env:Path += $path }
 
-    [System.Environment]::SetEnvironmentVariable("PATH", $Env:Path, "Machine")
+    [System.Environment]::SetEnvironmentVariable("PATH", $Env:Path, $type)
 
     # Notify system of change via WM_SETTINGCHANGE
     if (! ("Win32.NativeMethods" -as [Type]))
