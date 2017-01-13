@@ -1,5 +1,5 @@
 ﻿# Author: Miodrag Milic <miodrag.milic@gmail.com>
-# Last Change: 25-Jun-2015.
+# Last Change: 16-Nov-2016.
 
 #requires -version 3
 
@@ -38,7 +38,7 @@ function Get-WirelessNetwork() {
     )
 Write-Verbose $PSCmdlet.MyInvocation.PipelinePosition
 
-    if ((gwmi win32_operatingsystem).Version.Split(".")[0] -lt 6) { throw "Requires Windows Vista or higher." }
+    if (([int](gwmi win32_operatingsystem).Version.Split(".")[0]) -lt 6) { throw "Requires Windows Vista or higher." }
     if ((gsv "wlansvc").Status -ne "Running" ) { throw "Wlan service is not running." }
 
     $ifaces = netsh wlan show interfaces
