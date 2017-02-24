@@ -21,7 +21,6 @@ To import-module from SMB share without security warning:
 
 ## Discover
 
-
 To discover available functions from the CLI run `Get-Command`:
 
     gcm -module mm_network
@@ -30,7 +29,3 @@ To get help about specific function from the CLI run `Get-Help`:
 
     import-module mm_network
     man proxy
-
----
-
-License: [MIT](https://opensource.org/licenses/MIT)
