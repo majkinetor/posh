@@ -1,5 +1,5 @@
 # Author: Miodrag Milic <miodrag.milic@gmail.com>
-# Last Change: 09-Feb-2016.
+# Last Change: 17-Mar-2017.
 
 #requires -version 2.0
 
@@ -29,14 +29,6 @@ function Open-Regedit {
         [Alias('Name')]
         [string]$Key
     )
-
-    $Replacements = @{':'='' # Remove PowerShell syntax
-                    'HKCU'='HKEY_CURRENT_USER'
-                    'HKLM'='HKEY_LOCAL_MACHINE'
-                    'HKU'='HKEY_USERS'
-                    'HKCC'='HKEY_CURRENT_CONFIG'
-                    'HKCR'='HKEY_CLASSES_ROOT'}
-    $Replacements.Keys | % { $key = $key.ToUpper().Replace($_, $Replacements[$_]) }
 
     $Key =  $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($Key)
     Write-Verbose "Open $Key"
