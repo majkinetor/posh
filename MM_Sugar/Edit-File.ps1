@@ -10,7 +10,7 @@
 #>
 function Edit-File () {
     $f = $input + $args | % { """$($ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath( $_ ))""" }
-    iex "$Env:EDITOR $f"
+    iex ". '$Env:EDITOR' $f"
 }
 
 
