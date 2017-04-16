@@ -51,5 +51,5 @@ function Set-AutoLogon {
     Set-ItemProperty $RegPath "AutoLogonCount" -Value $v -Type DWord
 
     $v = if ($Script)  { $Script } else { '' }
-    Set-ItemProperty $RegROPath "(Default)" -Value $v
+    Set-ItemProperty $RegROPath "Set-Autologon" -Value $v
 }
