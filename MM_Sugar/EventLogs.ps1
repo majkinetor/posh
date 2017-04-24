@@ -37,7 +37,7 @@ function Get-EventLogs{
         }
         catch { Write-Warning "$log - $_" }
     }
-    $r | sort TimeWritten -Descending 
+    $r = $r | sort TimeWritten -Descending 
     if ($Raw) {$r} else { $r | select Source, TimeWritten, Message }
 }
 
