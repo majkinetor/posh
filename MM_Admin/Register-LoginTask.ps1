@@ -62,6 +62,7 @@ function Register-LoginTask()
     $user = "$env:USERDOMAIN\$env:USERNAME"
     Write-Verbose "User: $user"
 
+    $Execute = Resolve-Path $Execute
     $params = @{ Execute = $Execute; WorkingDirectory = Split-Path $Execute }
     if (![string]::IsNullOrWhiteSpace($Arguments)) { $params.Argument = $Arguments }
     $a = New-ScheduledTaskAction @params
