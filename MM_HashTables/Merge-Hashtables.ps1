@@ -22,10 +22,10 @@ function Merge-Hashtables
     [CmdletBinding()]
     param (
         # Base HashTable
-        [Parameter(Mandatory=$true)] [Hashtable] $First,
+        [Hashtable] $First,
 
         # Overriding HashTable
-        [Parameter(Mandatory=$true)] [Hashtable] $Second
+        [Hashtable] $Second
     )
 
     function Set-Keys ($First, $Second)
@@ -56,6 +56,7 @@ function Merge-Hashtables
     }
 
     function clone( $DeepCopyObject )  {
+        if (!$DeepCopyObject) { return $DeepCopyObject }        
         $memStream = new-object IO.MemoryStream
         $formatter = new-object Runtime.Serialization.Formatters.Binary.BinaryFormatter
         $formatter.Serialize($memStream,$DeepCopyObject)
@@ -63,6 +64,9 @@ function Merge-Hashtables
         $formatter.Deserialize($memStream)
     }
     
+    if (!$Second) { return (clone $First) }
+    if (!$First)  { return (clone $Second) }
+
     $firstClone  = clone $First
     $secondClone = clone $Second
 
