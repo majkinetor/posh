@@ -5,8 +5,8 @@
     HashTable will override.
 
 .DESCRIPTION
-    In case of duplicate keys the second HashTable's key values "win". 
-    Nested HashTables are supported.
+    In case of duplicate keys the second HashTable's key values "win".     
+    Nested and ordered HashTables are supported. Ordered HashTables are s
 
 .EXAMPLE
     $configData = Merge-Hashtables -First $defaultData -Second $overrideData
@@ -22,46 +22,47 @@ function Merge-Hashtables
     [CmdletBinding()]
     param (
         # Base HashTable
-        [Hashtable] $First,
+        $First,
 
         # Overriding HashTable
-        [Hashtable] $Second
+        $Second
     )
 
-    function Set-Keys ($First, $Second)
+    function set_keys ($First, $Second)
     {
-        @($First.Keys) | ? { $Second.ContainsKey($_) } | % {
-            if (($First.$_ -is [Hashtable]) -and ($Second.$_ -is [Hashtable])) {
-                Set-Keys -First $First.$_ -Second $Second.$_
-            }
+        @($First.Keys) | ? { $Second.Keys -contains $_ } | % {
+            if ( is_HashTable $First.$_ $Second.$_ ) { set_keys $First.$_ $Second.$_ }
             else {
-                $First.Remove($_)
-                $First.Add($_, $Second.$_)
+                $First.$_ = $Second.$_
             }
         }
     }
 
-    function Add-Keys ($First, $Second)
+    function add_keys ($First, $Second)
     {
         @($Second.Keys) | % {
-            if ($First.ContainsKey($_)) {
-                if (($Second.$_ -is [Hashtable]) -and ($First.$_ -is [Hashtable])) {
-                    Add-Keys -First $First.$_ -Second $Second.$_
-                }
-            }
-            else {
-                $First.Add($_, $Second.$_)
-            }
+            if ($First.Keys -contains $_) {
+                if (is_HashTable $Second.$_ $First.$_) { add_keys $First.$_ $Second.$_ }
+            } else { $First.$_ = $Second.$_ }
         }
     }
 
-    function clone( $DeepCopyObject )  {
+    function clone( $DeepCopyObject )  
+    {
         if (!$DeepCopyObject) { return $DeepCopyObject }        
         $memStream = new-object IO.MemoryStream
         $formatter = new-object Runtime.Serialization.Formatters.Binary.BinaryFormatter
         $formatter.Serialize($memStream,$DeepCopyObject)
         $memStream.Position=0
         $formatter.Deserialize($memStream)
+    }
+
+    function is_HashTable() {
+        foreach ($h in $args) { 
+            $b = ($h -is [HashTable]) -or ($h -is [System.Collections.Specialized.OrderedDictionary])
+            if (!$b) { return $false }
+        }
+        return $true
     }
     
     if (!$Second) { return (clone $First) }
@@ -70,8 +71,27 @@ function Merge-Hashtables
     $firstClone  = clone $First
     $secondClone = clone $Second
 
-    Set-Keys -First $firstClone -Second $secondClone
-    Add-Keys -First $firstClone -Second $secondClone
+    set_keys $firstClone $secondClone
+    add_keys $firstClone $secondClone
 
     $firstClone
 }
+
+# $a = [ordered]@{
+#     x = 1
+#     y = 2
+#     z = [ordered]@{
+#         z1=1
+#         z2=2
+#     }
+# }
+
+# $b = [ordered] @{
+#     x = 'a'    
+#     z = [ordered]@{ z2='a'}
+#     k = 'a'
+# }
+
+
+# $c = Merge-Hashtables $a $b
+# $c 
