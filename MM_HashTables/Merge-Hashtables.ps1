@@ -6,16 +6,10 @@
 
 .DESCRIPTION
     In case of duplicate keys the second HashTable's key values "win".     
-    Nested and ordered HashTables are supported. Ordered HashTables are s
+    Nested and ordered HashTables are supported. 
 
 .EXAMPLE
     $configData = Merge-Hashtables -First $defaultData -Second $overrideData
-
-.INPUTS
-    None
-
-.OUTPUTS
-    System.Collections.Hashtable
 #>
 function Merge-Hashtables
 {
