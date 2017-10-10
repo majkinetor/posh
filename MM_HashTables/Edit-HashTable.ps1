@@ -10,7 +10,7 @@ returning array of key/value pairs.
     ([ordered]) Hashtable to be transformed
 
 .PARAMETER Action
-    ScriptBlock to call on each element. Accepts arguments $key, $value, $parentpath. Parent path is dot joined list of all parents.
+    ScriptBlock to call on each element. Accepts arguments $key, $value, $parent. Parent is array of parent based on hierarchy.
     Returns array (key, val, key1, val1, .... keyN, valN).
     First 2 will be used instead of the original key/val pairs. Pass $null as key to delete the key/value pair in the resulting table.
     Other keys (1..N) will be addeded to resulting table.
@@ -35,7 +35,7 @@ returning array of key/value pairs.
     If array is encountered, each element is multiplied with 10 and added to the array besides original elements.
 
 #>
-function Edit-HashTable ($Hash, [ScriptBlock] $Action, [switch] $EnumerateArrays, [Parameter(DontShow = $true)] [string] $Parent ) {
+function Edit-HashTable ($Hash, [ScriptBlock] $Action, [switch] $EnumerateArrays, [Parameter(DontShow = $true)] [string[]] $Parent ) {
     function is_hashtable { ($args[0] -is [HashTable]) -or ($args[0] -is [System.Collections.Specialized.OrderedDictionary]) }
 
     $res = if ($Hash -is [HashTable]) { @{} } else { [ordered]@{} }
@@ -46,7 +46,7 @@ function Edit-HashTable ($Hash, [ScriptBlock] $Action, [switch] $EnumerateArrays
 
         if ($val -ne $null) {
             if (is_hashtable $val) {
-                $val = Edit-HashTable $val $Action "$($Parent).$($key)"
+                $val = Edit-HashTable $val $Action ($Parent + $key)
             }
 
             if (($val -is [Array]) -and $EnumerateArrays) {
