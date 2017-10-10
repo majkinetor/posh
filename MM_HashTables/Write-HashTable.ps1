@@ -34,7 +34,7 @@ function Write-HashTable {
             $val = "{" + $v + "}"
         }
         else { 
-            $val = $kv.Value.ToString()
+            $val = if ($kv.Value) { $kv.Value.ToString() } else { '' }
             if ($val.IndexOf("`n") -ne -1) {
                 $val = $val -split "`n"
                 $val = $val[0] + ($val[1..5] | % { "`n" + ' '*($max_len+3+$Indent) + $_})
@@ -45,7 +45,7 @@ function Write-HashTable {
             $rval = '*****'
             $val = if ($is_HashTable) { $val -replace '(?<=: ).+', $rval }  else  { $rval }
         }
-        $key = ' ' *$Indent + $kv.Key.PadRight($max_len) + ' : ' 
-        if ($is_HashTable) { $key; $val } else { $key + $val }
+        $key = ' '*$Indent + $kv.Key.PadRight($max_len)
+        if ($is_HashTable) { $key; $val } else { $key + ' : '  + $val }
     }
 }
