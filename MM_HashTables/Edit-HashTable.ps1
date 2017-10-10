@@ -46,7 +46,7 @@ function Edit-HashTable ($Hash, [ScriptBlock] $Action, [switch] $EnumerateArrays
 
         if ($val -ne $null) {
             if (is_hashtable $val) {
-                $val = Transform-HashTable $val $Action "$($Parent).$($key)"
+                $val = Edit-HashTable $val $Action "$($Parent).$($key)"
             }
 
             if (($val -is [Array]) -and $EnumerateArrays) {
