@@ -19,12 +19,12 @@ returning array of key/value pairs.
     Return $false to remove array item from resulting array or ($true, $item1 ... $itemN) to replace the current $value with $items[1..N].
 
 .EXAMPLE
-    Transform-HashTable @{x=1; y=2; z=@{p=3}} { param( $key, $value ) $key.ToUpper(), $value  }
+    Edit-HashTable @{x=1; y=2; z=@{p=3}} { param( $key, $value ) $key.ToUpper(), $value  }
 
     Transform keys to uppercase
 
 .EXAMPLE
-    Transform-HashTable ([ordered]@{x=1; y=2; z=1,2,3,4}) { param( $key, $value ) 
+    Edit-HashTable ([ordered]@{x=1; y=2; z=1,2,3,4}) { param( $key, $value ) 
         if (!$key) { return $true, $value, ($value*10) } 
         else { 
             if ($value -isnot [Array]) { $key, $value, "$key*10", ($value*10) }  else { $key, $value }
@@ -35,7 +35,7 @@ returning array of key/value pairs.
     If array is encountered, each element is multiplied with 10 and added to the array besides original elements.
 
 #>
-function Transform-HashTable ($Hash, [ScriptBlock] $Action, [switch] $EnumerateArrays, [Parameter(DontShow = $true)] [string] $Parent ) {
+function Edit-HashTable ($Hash, [ScriptBlock] $Action, [switch] $EnumerateArrays, [Parameter(DontShow = $true)] [string] $Parent ) {
     function is_hashtable { ($args[0] -is [HashTable]) -or ($args[0] -is [System.Collections.Specialized.OrderedDictionary]) }
 
     $res = if ($Hash -is [HashTable]) { @{} } else { [ordered]@{} }
