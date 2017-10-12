@@ -23,4 +23,3 @@ function Stop-ProcessByPort( [ValidateNotNullOrEmpty()] [int] $Port ) {
 }
 
 sal killp Stop-ProcessByPort
-killp 3001
