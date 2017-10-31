@@ -71,7 +71,8 @@ function Update-CLIProxy()
                 if ($Register) { [Environment]::SetEnvironmentVariable($_, $Env:http_proxy, "Machine") }
             }
 
-            $Env:no_proxy = $proxy.Override.Replace(";",",") # linux format
+            $Env:no_proxy = $proxy.Override.Replace(";",",").Replace('*','') # linux format
+
             if ($Register) { [Environment]::SetEnvironmentVariable("no_proxy", $Env:no_proxy, "Machine") }
         }
     }
