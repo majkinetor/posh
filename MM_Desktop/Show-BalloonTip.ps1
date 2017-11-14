@@ -1,15 +1,24 @@
-# taken from: http://techibee.com/powershell/system-tray-pop-up-message-notifications-using-powershell/1865
-# $ballon.Dispose at the end
+<#
+.SYNOPSIS
+    Show balloon tooltip
+
+.DESCRIPTION
+    Show balloon tooltip from system tray
+
+.EXAMPLE
+    Show-BalloonTip -Title Website -MessageType Info -Message 'Build OK!'
+#>
 function Show-BalloonTip {
     [cmdletbinding()]
     param(
         [parameter(Mandatory=$true)]
         [string]$Title,
+        
         [ValidateSet("Info","Warning","Error")]
         [string]$MessageType = "Info",
+
         [parameter(Mandatory=$true)]
-        [string]$Message,
-        [string]$Duration=10000
+        [string]$Message
     )
 
     [system.Reflection.Assembly]::LoadWithPartialName('System.Windows.Forms') | Out-Null
@@ -21,6 +30,6 @@ function Show-BalloonTip {
     $balloon.BalloonTipText = $Message
     $balloon.BalloonTipTitle = $Title
     $balloon.Visible = $true
-    $balloon.ShowBalloonTip($Duration)
-    $ballon
+    $balloon.ShowBalloonTip(0)
+    $balloon.Dispose()
 }
