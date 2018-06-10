@@ -8,6 +8,7 @@
 function Write-HashTable { 
     param(
         # ([ordered]) Hashtable to display
+        [Parameter(ValueFromPipeline=$true)]
         $HashTable,
 
         # List of keys to include (only first level)

@@ -6,7 +6,7 @@
 #>
 function Invoke-ControlPanelItem() { 
     if (!(gcm fzf -ea 0)) { Write-Host "To use this function, install fzf first: cinst fzf"; return }
-    Get-ControlPanelItem  | % name | sort | fzf | Show-ControlPanelItem 
+    Get-ControlPanelItem  | % name | sort | fzf --reverse | Show-ControlPanelItem 
 }
 
 sal control Invoke-ControlPanelItem
