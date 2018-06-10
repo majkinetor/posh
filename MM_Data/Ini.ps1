@@ -43,52 +43,69 @@ function ConvertFrom-Ini{
 #>
 function Set-IniValue {
     param(
+        # Ini string
         [Parameter(ValueFromPipeline=$true)]
         [string] $InputObject,
+        
+        [Parameter(Mandatory=$true)]
         [string] $Section,
+
+        [Parameter(Mandatory=$true)]
         [string] $Key,
-        [string] $Value 
+
+        # Key value; if null, key will be deleted
+        $Value = $null
     ) 
     
-    $line = "$Key=$Value"
+    $remove = $Value -eq $null
+    $line = if ($remove) {''} else { "$Key=$Value" }
+
     $sectionRe = '(?<=(?:\s*\n)+)\[\s*(?<Section>.+?)\s*\]\s*\n(?<Keys>(?:.|\n)*?)(?=(?:\s*\n)*\[)'
     $m = "`n$ini`n[" | sls -AllMatches $sectionRe
-    $matchSection = $m.Matches | ? { $_.Groups['Section'] -match $Section }
-    if (!$matchSection) { return "$ini`n[$Section]`n$line`n" }
+    $matchSection = $m.Matches | ? { $_.Groups['Section'].Value -eq $Section }
+    if (!$matchSection) { return $( if ($remove) {} else { "$ini`n[$Section]`n$line" } ) }
     
     $matchKeys = $matchSection.Groups['Keys']
     $keys = $matchKeys.Value
     if ($keys -and ($m = "`n$keys`n" | sls "\s*\n$Key\s*=.+(?=\n)")) {
-        $idx = $matchKeys.Index + $m.Matches[0].Index - 2
-        $ini = $ini.Substring(0, $idx ) + "`n$line" + $ini.Substring( $idx + $m.Matches[0].Length)
+        $idxStart = $matchKeys.Index + $m.Matches[0].Index - 2
+        $idxEnd   = $idxStart + $m.Matches[0].Length
+        if (!$remove) { $line = "`n$line"}
+        $ini = $ini.Substring(0, $idxStart) + $line + $ini.Substring($idxEnd)
     } else {
+        if ($remove) { return }
         $ini = $ini -replace "`n\s*\[\s*$Section\s*\]\s*", "`$0`n$line`n"
     }
     $ini 
 }
 
-# $ini = @"
-# [S1]
-# foo = boo
-# faa=baaa   
+$ini = @"
+[S1]
+foo = boo
+faa=baaa   
 
-# [S2]
-# foo = boo
-# saa saa = b1 c2  d3
-# p=l
-# [Empty]
-# ;Empty with comment
-# [Empty2]
+[S2]
+foo = boo
+saa saa = b1 c2  d3
+p=l
+[Empty]
+;Empty with comment
+[Empty2]
 
-# [Empty3]
+[Empty3]
 
-# [S3]
+[S3]
 
-# ; Some comment here
-# foo= boo
+; Some comment here
+foo= boo
 
-# ; More comments
-# sa = ba
+; More comments
+sa = ba
 
-# [Meh]
-# "@
+[Meh]
+"@
+
+# $ini = gc "$Env:AppData\Ghisler\wincmd.ini" -Encoding UTF8 -Raw
+#$ini = Set-IniValue $ini FileSystemPlugins Uninstaller64 meh
+#$ini = Set-IniValue $ini FileSystemPlugins64 Uninstaller64 1
+#$ini | Out-File temp.ini
