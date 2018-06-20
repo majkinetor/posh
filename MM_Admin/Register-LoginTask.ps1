@@ -53,19 +53,20 @@ function Register-LoginTask()
         # Execution limit, by default indefinite (more precise, 27.7 years)
         [timespan] $Limit=(New-TimeSpan -Days 9999),
         # Run with highest privilege
-        [switch]$RunElevated
+        [switch]$RunElevated,
+        # User, by default current one
+        $User = "$env:USERDOMAIN\$env:USERNAME"
     )
 
     if (!(Test-Path $Execute)) { throw "Invalid path: $Execute" }
     $isScript = (gi $Execute).Extension -eq '.ps1'
 
-    $user = "$env:USERDOMAIN\$env:USERNAME"
     Write-Verbose "User: $user"
 
     $Execute = Resolve-Path $Execute
     $params = @{ Execute = $Execute; WorkingDirectory = Split-Path $Execute }
     if (![string]::IsNullOrWhiteSpace($Arguments)) { $params.Argument = $Arguments }
-    $a = New-ScheduledTaskAction @params
+    $a = New-ScheduledTaskAction @params 
     $t = New-ScheduledTaskTrigger -AtLogon -User $user -RandomDelay $Delay
     $s = New-ScheduledTaskSettingsSet -ExecutionTimeLimit $Limit  -DontStopIfGoingOnBatteries -AllowStartIfOnBatteries -Compatibility Win8 -StartWhenAvailable
 
@@ -86,5 +87,5 @@ function Register-LoginTask()
         $params.Action = New-ScheduledTaskAction -Execute "$PSHome\powershell.exe" -Argument $sa
     } else { Write-Verbose "Registering login executable: $Execute $Arguments" }
 
-    Register-ScheduledTask @params
+    Register-ScheduledTask @params -User gitlab-runner -Password P@ssw0rd
 }
