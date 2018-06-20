@@ -19,18 +19,22 @@ function Write-HashTable {
         # List of keys to hide - values are replaced with '*****'
         [string[]] $Hide,
 
+        # One line output
+        [switch] $OneLine,
+
         [Parameter(DontShow = $true)]
         [int] $Indent
     ) 
 
     $HashTable.Keys | % { $max_len=0 } { $l = $_.ToString().Length; if ($l -gt $max_len) { $max_len = $l } }
+    $res = ''
     foreach ($kv in $HashTable.GetEnumerator()) {
         if ($kv.Key -in $Exclude) { continue }
         if ($Include -and ($kv.Key -notin $Include)) { continue }
 
         $is_HashTable = ($kv.Value -is [HashTable]) -or ($kv.Value -is [System.Collections.Specialized.OrderedDictionary])
         if ($is_HashTable) { 
-            $val = Write-HashTable $kv.Value -Hide $Hide -Include $null -Exclude $Exclude -Indent ($Indent + 2) 
+            $val = Write-HashTable $kv.Value -Hide $Hide -Include $null -Exclude $Exclude -Indent ($Indent + 2) -OneLine:$OneLine
         } 
         elseif ($kv.Value -is [Array] ) {
             $v = $kv.Value[0..3] -join ', '
@@ -49,9 +53,14 @@ function Write-HashTable {
             $rval = '*****'
             $val = if ($is_HashTable) { $val -replace '(?<=: ).+', $rval }  else  { $rval }
         }
-        $key = ' '*$Indent + $kv.Key.ToString().PadRight($max_len)
-        if ($is_HashTable) { $key; $val } else { $key + ' : '  + $val }
+
+        $key = $kv.Key.ToString()
+        if (!$OneLine) { $key = ' '*$Indent + $key.PadRight($max_len) + ' ' }
+
+        $res += if ($is_HashTable) { $key; $val } else { $key + ': '  + $val }
+        if (!$OneLine) { $res += "`n" } else { $res += " | "}
     }
+    $res
 }
 
 # $x = [ordered]@{
