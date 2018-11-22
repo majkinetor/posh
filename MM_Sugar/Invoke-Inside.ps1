@@ -16,4 +16,4 @@ function Invoke-Inside ($dir, $script) {
     pushd $dir; & $script; popd
 }
 
-sal in Invoke-Inside
+sal inside Invoke-Inside
