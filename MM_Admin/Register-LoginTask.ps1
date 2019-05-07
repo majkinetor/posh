@@ -87,5 +87,5 @@ function Register-LoginTask()
         $params.Action = New-ScheduledTaskAction -Execute "$PSHome\powershell.exe" -Argument $sa
     } else { Write-Verbose "Registering login executable: $Execute $Arguments" }
 
-    Register-ScheduledTask @params -User gitlab-runner -Password P@ssw0rd
+    Register-ScheduledTask @params
 }
