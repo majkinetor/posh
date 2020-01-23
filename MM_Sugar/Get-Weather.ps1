@@ -6,7 +6,7 @@
 #>
 function Get-Weather($City=$Env:City) {
     if ($City -eq $null) {
-        $City = Read-Host "Specify city"
+        $Env:City = $City = Read-Host "Specify city"
         [Environment]::SetEnvironmentVariable("City", $City, "User")
     }
     (Invoke-WebRequest http://wttr.in -UserAgent curl -UseBasicParsing).Content
