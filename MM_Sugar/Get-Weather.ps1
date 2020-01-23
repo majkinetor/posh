@@ -9,7 +9,7 @@ function Get-Weather($City=$Env:City) {
         $City = Read-Host "Specify city"
         [Environment]::SetEnvironmentVariable("City", $City, "User")
     }
-    (Invoke-WebRequest http://wttr.in/$City).ParsedHtml.getElementsByTagName("pre") | % { $_.outerText }
+    (Invoke-WebRequest http://wttr.in -UserAgent curl -UseBasicParsing).Content
 }
 
 sal wtr Get-Weather
