@@ -30,12 +30,14 @@ function Write-HashTable {
     $HashTable.Keys | % { $max_len=0 } { $l = $_.ToString().Length; if ($l -gt $max_len) { $max_len = $l } }
     $res = ''
     foreach ($kv in $HashTable.GetEnumerator()) {
+        if ($res) { if (!$OneLine) { $res += "`n" } else { $res += " | "} }
         if ($kv.Key -in $Exclude) { continue }
         if ($Include -and ($kv.Key -notin $Include)) { continue }
 
         $is_HashTable = ($kv.Value -is [HashTable]) -or ($kv.Value -is [System.Collections.Specialized.OrderedDictionary])
         if ($is_HashTable) { 
             $val = Write-HashTable $kv.Value -Hide $Hide -Include $null -Exclude $Exclude -Indent ($Indent + 2) -OneLine:$OneLine
+            $val = $val.Substring(1)
         } 
         elseif ($kv.Value -is [Array] ) {
             $v = $kv.Value[0..3] -join ', '
@@ -58,8 +60,7 @@ function Write-HashTable {
         $key = $kv.Key.ToString()
         if (!$OneLine) { $key = ' '*$Indent + $key.PadRight($max_len) + ' ' }
 
-        $res += if ($is_HashTable) { $key; $val } else { $key + ': '  + $val }
-        if (!$OneLine) { $res += "`n" } else { $res += " | "}
+        $res += if ($is_HashTable) { $key; "`n"; $val } else { $key + ': '  + $val }
     }
     $res
 }
