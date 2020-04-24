@@ -11,10 +11,11 @@ function Stop-ProcessByPort( [ValidateNotNullOrEmpty()] [int] $Port ) {
     if (!$p_line) { Write-Host "No process found using port" $Port; return }    
     $p_id = $p_line -split '\s+' | select -Last 1
     if (!$p_id) { throw "Can't parse process id for port $Port" }
+    if ($p_id -eq '0') { Write-Warning $p_line; return }
     
-    $proc = Get-WmiObject win32_process -Filter "ProcessId = $p_id"
+    $proc = Get-CimInstance win32_process -Filter "ProcessId = $p_id"
     if (!$proc) { Write-Host "Process with pid $p_id using port $Port is no longer running" }
-    $proc.Terminate() | Out-Null
+    Invoke-CimMethod $proc -MethodName "Terminate" | Out-Null
 
     #$p_name = ps -Id $p_id -ea 0 | kill -Force -PassThru | % ProcessName
     Write-Host "Process killed: $($proc.Name) (id $p_id) using port" $Port   
@@ -23,3 +24,5 @@ function Stop-ProcessByPort( [ValidateNotNullOrEmpty()] [int] $Port ) {
 }
 
 sal killp Stop-ProcessByPort
+
+killp 3001
