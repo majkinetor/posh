@@ -1,5 +1,6 @@
-function Wait-Action ([ScriptBlock]$Action, [int]$Timeout=20) {
+function Wait-Action ([ScriptBlock]$Action, [int]$Timeout=20, [string] $Message) {
     Write-Host "Waiting for action to succeed up to $Timeout seconds"
+    Write-Host "|== $Message"
 
     $start = Get-Date
     while ($true) {
