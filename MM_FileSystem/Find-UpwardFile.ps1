@@ -23,7 +23,7 @@ function Find-UpwardFile {
         [switch]$ReturnObject
     )
 
-    $diStartDir = gi "$StartDir"
+    $diStartDir = Get-Item "$StartDir"
     if (!$?) { throw "Start directory doesn't exist: $StartDir" }
 
     while ($diStartDir.GetFileSystemInfos($Name).Length -eq 0)
