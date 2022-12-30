@@ -1,3 +1,6 @@
+# $Url = 'https:/...'
+# Wait-Action { Invoke-WebRequest $args[0] } -ArgumentList $Url -Timeout 60 -Message "Testing service response: $url"
+#
 function Wait-Action ([ScriptBlock]$Action, [int]$Timeout=20, [string] $Message) {
     Write-Host "Waiting for action to succeed up to $Timeout seconds"
     Write-Host "|== $Message"
