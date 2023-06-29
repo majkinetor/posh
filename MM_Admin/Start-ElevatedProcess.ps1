@@ -108,5 +108,3 @@ function Start-ElevatedProcess {
     Write-Verbose $($params | out-string)
     Start-Process @params
 }
-
-Set-Alias sudo Start-ElevatedProcess
