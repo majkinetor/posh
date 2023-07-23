@@ -19,5 +19,3 @@ function Get-HelpPager() {
 
     get-help "$args" -Full | less.exe
 }
-
-sal m Get-HelpPager
