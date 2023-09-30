@@ -7,16 +7,16 @@ function Set-UncHostnameAlias($UncPath, $RemoteAlias) {
 
     $remote_hostname = $UncPath -split '\\' | ? {$_} | select -First 1
 
-    $hostEntry = Get-HostEntry $remote_alias* -ea 0 | ? { $_.Comment -eq $remote_hostname } | select -First 1
+    $hostEntry = Get-HostEntry $RemoteAlias* -ea 0 | ? { $_.Comment -eq $remote_hostname } | select -First 1
     if (!$hostEntry) {
-        $remote_alias += (Get-HostEntry $remote_alias*).Count + 1
-        Write-Verbose "Adding alias $remote_alias => $remote_hostname"
+        $RemoteAlias += (Get-HostEntry $RemoteAlias*).Count + 1
+        Write-Verbose "Adding alias $RemoteAlias => $remote_hostname"
         $remote_ip = Test-Connection -ComputerName $remote_hostname -Count 1 -ErrorAction Stop | % IPV4Address | % IPAddressToString
-        Add-HostEntry -Name $remote_alias -Address $remote_ip -Force -Comment $remote_hostname | Out-Null
+        Add-HostEntry -Name $RemoteAlias -Address $remote_ip -Force -Comment $remote_hostname | Out-Null
     } else {
-        $remote_alias =  $hostEntry.Name
-        Write-Verbose "Using $remote_hostname alias: $remote_alias"
+        $RemoteAlias =  $hostEntry.Name
+        Write-Verbose "Using $remote_hostname alias: $RemoteAlias"
     }
 
-    $UncPath.Replace("\\$remote_hostname", "\\$remote_alias")
+    $UncPath.Replace("\\$remote_hostname", "\\$RemoteAlias")
 }
