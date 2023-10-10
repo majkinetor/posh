@@ -10,4 +10,6 @@ function Get-NICredential([string]$Username, [string]$Password)
     $ss = New-Object SecureString
     $Password.ToCharArray() | % { $ss.AppendChar($_) }
     New-Object PSCredential -Argumentlist $Username, $ss
+
+#    [pscredential]::new($Username, ($Password | ConvertTo-SecureString -AsPlainText))
 }
